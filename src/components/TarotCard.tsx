@@ -1,4 +1,3 @@
-import { useTarotStore } from '@/store/useTarotStore';
 import type { TarotCard } from '@/types';
 
 interface TarotCardProps {

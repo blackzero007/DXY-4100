@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, History } from 'lucide-react';
+import { Sparkles, History, BookOpen } from 'lucide-react';
 
 export default function NavBar() {
   const location = useLocation();
@@ -37,6 +37,17 @@ export default function NavBar() {
             >
               <History className="w-4 h-4" />
               <span>历史记录</span>
+            </Link>
+            <Link
+              to="/tarot-index"
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                location.pathname === '/tarot-index'
+                  ? 'text-amber-300 bg-amber-500/10'
+                  : 'text-gray-300 hover:text-amber-200 hover:bg-white/5'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>塔罗图鉴</span>
             </Link>
           </div>
         </div>
