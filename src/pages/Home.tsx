@@ -1,11 +1,18 @@
+import { useState } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import TarotCard from '@/components/TarotCard';
 import CardReading from '@/components/CardReading';
-import { Sparkles, AlertCircle } from 'lucide-react';
+import ShareImageModal from '@/components/ShareImageModal';
+import { generateShareImage } from '@/utils/shareImage';
+import { Sparkles, AlertCircle, Share2 } from 'lucide-react';
 
 export default function Home() {
   const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday } =
     useTarotStore();
+
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareImageData, setShareImageData] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const remaining = getRemainingDraws();
   const canDraw = canDrawToday();
@@ -13,6 +20,21 @@ export default function Home() {
   const handleDraw = () => {
     if (canDraw && !isFlipping) {
       drawCard();
+    }
+  };
+
+  const handleGenerateShare = async () => {
+    if (!currentCard) return;
+    setShareModalOpen(true);
+    setShareImageData(null);
+    setIsGenerating(true);
+    try {
+      const dataUrl = await generateShareImage(currentCard);
+      setShareImageData(dataUrl);
+    } catch (err) {
+      console.error('生成分享图失败:', err);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -55,8 +77,20 @@ export default function Home() {
       )}
 
       {currentCard && !isFlipping && (
-        <div className="w-full animate-fade-in">
+        <div className="w-full animate-fade-in space-y-6">
           <CardReading card={currentCard} />
+
+          <div className="flex justify-center">
+            <button
+              onClick={handleGenerateShare}
+              className="group relative flex items-center gap-2.5 px-7 py-3.5 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 border-2 border-amber-500/50 hover:border-amber-400/70 rounded-xl text-amber-200 hover:text-amber-100 font-medium shadow-lg hover:shadow-amber-500/20 hover:shadow-xl transition-all duration-300 active:scale-95"
+            >
+              <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-400/0 via-amber-400/10 to-amber-400/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Share2 className="w-5 h-5 relative z-10" />
+              <span className="relative z-10">生成分享图</span>
+              <span className="relative z-10 text-amber-400">✨</span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -65,6 +99,14 @@ export default function Home() {
           点击上方牌面开始抽牌
         </p>
       )}
+
+      <ShareImageModal
+        open={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        imageDataUrl={shareImageData}
+        isGenerating={isGenerating}
+        cardName={currentCard?.name || ''}
+      />
     </div>
   );
 }
