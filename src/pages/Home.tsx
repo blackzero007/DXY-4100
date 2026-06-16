@@ -13,7 +13,7 @@ import { tarotCards } from '@/data/tarotCards';
 import { Sparkles, AlertCircle, Share2, Wind, CloudFog, Lightbulb, RotateCcw } from 'lucide-react';
 
 export default function Home() {
-  const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday, getLastDrawRecord, reviewLastDraw } =
+  const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday, drawHistory, reviewLastDraw } =
     useTarotStore();
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -28,8 +28,8 @@ export default function Home() {
   const canDraw = canDrawToday();
 
   const lastDrawInfo = useMemo(() => {
-    const lastRecord = getLastDrawRecord();
-    if (!lastRecord) return null;
+    if (drawHistory.length === 0) return null;
+    const lastRecord = drawHistory[0];
     const card = tarotCards.find((c) => c.id === lastRecord.cardId);
     if (!card) return null;
     return {
@@ -37,7 +37,7 @@ export default function Home() {
       cardName: card.name,
       symbol: card.symbol,
     };
-  }, [getLastDrawRecord]);
+  }, [drawHistory]);
 
   const handleDraw = () => {
     if (canDraw && !isFlipping && !isMeditating) {
