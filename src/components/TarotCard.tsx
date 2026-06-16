@@ -7,6 +7,7 @@ interface TarotCardProps {
   isFlipping: boolean;
   onClick: () => void;
   disabled?: boolean;
+  floating?: boolean;
 }
 
 interface Particle {
@@ -79,6 +80,7 @@ export default function TarotCardComponent({
   isFlipping,
   onClick,
   disabled = false,
+  floating = false,
 }: TarotCardProps) {
   const isFlipped = card !== null || isFlipping;
   const [particles, setParticles] = useState<Particle[]>([]);
@@ -124,7 +126,9 @@ export default function TarotCardComponent({
       <div
         className={`relative w-full h-full transition-transform duration-1500 transform-style-preserve-3d ${
           isFlipped ? 'rotate-y-180' : ''
-        } ${isFlipping ? 'animate-shuffle' : ''}`}
+        } ${isFlipping ? 'animate-shuffle' : ''} ${
+          floating && !isFlipped && !isFlipping ? 'animate-float' : ''
+        }`}
       >
         <div className="absolute inset-0 backface-hidden rounded-2xl overflow-hidden shadow-2xl">
           <div className="w-full h-full bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-950 flex items-center justify-center border-4 border-amber-500/60">
