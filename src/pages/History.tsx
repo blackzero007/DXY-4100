@@ -2,14 +2,14 @@ import { useMemo, useState, useEffect } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import { tarotCards } from '@/data/tarotCards';
 import { formatDate, getTodayString } from '@/utils/date';
-import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database, Sparkles } from 'lucide-react';
+import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database, Sparkles, X } from 'lucide-react';
 import MoodModal from '@/components/MoodModal';
 import DataBackupButtons from '@/components/DataBackupButtons';
 import { playSound } from '@/utils/soundManager';
 import type { TarotCard, DrawRecord, MoodEntry } from '@/types';
 
 export default function HistoryPage() {
-  const { drawHistory, addMoodEntry, updateMoodEntry, deleteMoodEntry, getMoodByRecordId, toggleFavorite } = useTarotStore();
+  const { drawHistory, addMoodEntry, updateMoodEntry, deleteMoodEntry, getMoodByRecordId, toggleFavorite, deleteDrawRecord } = useTarotStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<DrawRecord | null>(null);
   const [currentMood, setCurrentMood] = useState<MoodEntry | undefined>(undefined);
@@ -148,6 +148,14 @@ export default function HistoryPage() {
       playSound('modalClose');
       deleteMoodEntry(currentMood.id);
       setModalOpen(false);
+    }
+  };
+
+  const handleDeleteRecord = (record: DrawRecord) => {
+    const confirmed = window.confirm('确定要删除这条抽牌记录吗？关联的心情记录也会被删除。');
+    if (confirmed) {
+      playSound('buttonClick');
+      deleteDrawRecord(record.id);
     }
   };
 
@@ -347,7 +355,7 @@ export default function HistoryPage() {
                       return (
                         <div
                           key={record.id}
-                          className="backdrop-blur-sm rounded-xl p-4 transition-colors"
+                          className="backdrop-blur-sm rounded-xl p-4 transition-colors relative"
                           style={{
                             backgroundColor: 'var(--card-bg)',
                             border: '1px solid var(--card-border)',
@@ -359,6 +367,16 @@ export default function HistoryPage() {
                             (e.currentTarget as HTMLElement).style.borderColor = 'var(--card-border)';
                           }}
                         >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteRecord(record);
+                            }}
+                            className="absolute top-2 right-2 p-1.5 rounded-full transition-colors hover:bg-red-500/20 text-gray-400/70 hover:text-red-400"
+                            title="删除记录"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                           <div className="flex items-center gap-4">
                             <div
                               className={`w-14 h-20 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center text-2xl shadow-lg flex-shrink-0 ${isReversed ? 'rotate-180' : ''}`}

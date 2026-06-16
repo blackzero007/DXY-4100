@@ -174,6 +174,14 @@ export const useTarotStore = create<TarotState>((set, get) => ({
     playSound('buttonClick');
   },
 
+  deleteDrawRecord: (recordId: string) => {
+    const newHistory = get().drawHistory.filter((record) => record.id !== recordId);
+    const newMoods = get().moodEntries.filter((mood) => mood.recordId !== recordId);
+    set({ drawHistory: newHistory, moodEntries: newMoods });
+    storage.set(STORAGE_KEY_HISTORY, newHistory);
+    storage.set(STORAGE_KEY_MOODS, newMoods);
+  },
+
   isFavoriteByRecordId: (recordId: string) => {
     const record = get().drawHistory.find((r) => r.id === recordId);
     return record?.isFavorite ?? false;

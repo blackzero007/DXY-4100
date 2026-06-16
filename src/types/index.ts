@@ -59,6 +59,7 @@ export interface TarotState {
   deleteMoodEntry: (moodId: string) => void;
   getMoodByRecordId: (recordId: string) => MoodEntry | undefined;
   toggleFavorite: (recordId: string) => void;
+  deleteDrawRecord: (recordId: string) => void;
   isFavoriteByRecordId: (recordId: string) => boolean;
   isCurrentCardFavorite: () => boolean;
   exportBackup: () => void;
