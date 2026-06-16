@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from '@/pages/Home';
 import History from '@/pages/History';
 import TarotIndex from '@/pages/TarotIndex';
+import Horoscope from '@/pages/Horoscope';
 import NavBar from '@/components/NavBar';
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/history" element={<History />} />
             <Route path="/tarot-index" element={<TarotIndex />} />
+            <Route path="/horoscope" element={<Horoscope />} />
           </Routes>
         </div>
       </div>

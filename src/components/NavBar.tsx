@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, History, BookOpen } from 'lucide-react';
+import { Sparkles, History, BookOpen, Star } from 'lucide-react';
 import { playSound } from '@/utils/soundManager';
 
 export default function NavBar() {
@@ -32,6 +32,18 @@ export default function NavBar() {
             >
               <Sparkles className="w-4 h-4" />
               <span>今日抽牌</span>
+            </Link>
+            <Link
+              to="/horoscope"
+              onClick={handleNavClick}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                location.pathname === '/horoscope'
+                  ? 'text-amber-300 bg-amber-500/10'
+                  : 'text-gray-300 hover:text-amber-200 hover:bg-white/5'
+              }`}
+            >
+              <Star className="w-4 h-4" />
+              <span>星座运势</span>
             </Link>
             <Link
               to="/history"
