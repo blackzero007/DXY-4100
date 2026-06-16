@@ -12,6 +12,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作上会有新机遇出现，大胆尝试可能会有意想不到的收获。',
     wealthFortune: '财运方面有意外之喜，但也要谨慎理财，不要冲动消费。',
     healthFortune: '精力充沛，适合开始新的运动计划，但注意不要过度劳累。',
+    luckyColor: '红色',
+    luckyNumber: '3号',
+    luckyItem: '背包',
   },
   {
     id: 1,
@@ -24,6 +27,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中展现才华的好时机，你的创意和能力会得到认可。',
     wealthFortune: '正财运旺盛，通过努力工作会有不错的收入回报。',
     healthFortune: '身体状态良好，注意保持规律作息，避免熬夜。',
+    luckyColor: '紫色',
+    luckyNumber: '1号',
+    luckyItem: '魔杖',
   },
   {
     id: 2,
@@ -36,6 +42,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '适合深思熟虑和规划，智慧的决策将为未来打下基础。',
     wealthFortune: '财运平稳，适合保守理财，不宜进行风险投资。',
     healthFortune: '注意休息，尤其是睡眠质量，可能会有多梦的情况。',
+    luckyColor: '深蓝色',
+    luckyNumber: '2号',
+    luckyItem: '月亮石',
   },
   {
     id: 3,
@@ -48,6 +57,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '创意满满的一天，适合艺术创作和项目规划。',
     wealthFortune: '财运亨通，可能有意外收入或礼物。',
     healthFortune: '身心愉悦，注意饮食均衡，多吃新鲜蔬果。',
+    luckyColor: '粉色',
+    luckyNumber: '6号',
+    luckyItem: '花环',
   },
   {
     id: 4,
@@ -60,6 +72,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作上有机会展现领导才能，适合处理重要事务。',
     wealthFortune: '财运稳定增长，适合制定长期理财计划。',
     healthFortune: '注意肩颈和腰部的保健，避免久坐不动。',
+    luckyColor: '深红色',
+    luckyNumber: '4号',
+    luckyItem: '皇冠',
   },
   {
     id: 5,
@@ -72,6 +87,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '适合学习和提升技能，向经验丰富的人请教。',
     wealthFortune: '财运平稳，保守理财为宜，听取专业建议。',
     healthFortune: '注意呼吸系统的健康，多做深呼吸练习。',
+    luckyColor: '金色',
+    luckyNumber: '5号',
+    luckyItem: '钥匙',
   },
   {
     id: 6,
@@ -84,6 +102,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中需要做出重要选择，考虑清楚再行动。',
     wealthFortune: '财运方面可能有两个选择，谨慎权衡利弊。',
     healthFortune: '心情愉悦对身体健康大有裨益，保持乐观心态。',
+    luckyColor: '玫瑰红',
+    luckyNumber: '7号',
+    luckyItem: '玫瑰',
   },
   {
     id: 7,
@@ -96,6 +117,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '事业上充满动力，朝着目标全速前进，成功在望。',
     wealthFortune: '财运上升，通过努力拼搏会有丰厚回报。',
     healthFortune: '精力充沛，适合运动和户外活动，但注意安全。',
+    luckyColor: '藏青色',
+    luckyNumber: '7号',
+    luckyItem: '盾牌',
   },
   {
     id: 8,
@@ -108,6 +132,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '面对挑战时保持冷静和耐心，你有能力应对一切。',
     wealthFortune: '财运稳定，稳健投资会有好的回报。',
     healthFortune: '身体强健，但注意不要过度消耗精力。',
+    luckyColor: '橙色',
+    luckyNumber: '8号',
+    luckyItem: '狮子吊坠',
   },
   {
     id: 9,
@@ -120,6 +147,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '适合独立思考和深度工作，专注的状态效率很高。',
     wealthFortune: '财运平淡，不宜进行大的投资，静观其变。',
     healthFortune: '注意休息和放松，冥想和瑜伽会很有帮助。',
+    luckyColor: '深灰色',
+    luckyNumber: '9号',
+    luckyItem: '灯笼',
   },
   {
     id: 10,
@@ -132,6 +162,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中可能出现新机遇，把握机会可以实现突破。',
     wealthFortune: '财运起伏，可能有意外收入，也可能有意外支出。',
     healthFortune: '身体状态时好时坏，注意调整作息和饮食。',
+    luckyColor: '紫罗兰',
+    luckyNumber: '10号',
+    luckyItem: '罗盘',
   },
   {
     id: 11,
@@ -144,6 +177,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中会得到公正的评价，付出的努力会有相应回报。',
     wealthFortune: '财运平稳，收支平衡，适合整理财务。',
     healthFortune: '注意身体的平衡状态，保持良好的生活习惯。',
+    luckyColor: '青色',
+    luckyNumber: '11号',
+    luckyItem: '天平',
   },
   {
     id: 12,
@@ -156,6 +192,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作遇到瓶颈时，换个思路可能会有突破。',
     wealthFortune: '财运平平，不宜急功近利，耐心等待时机。',
     healthFortune: '注意放松身心，可以尝试倒立或瑜伽来缓解压力。',
+    luckyColor: '靛蓝色',
+    luckyNumber: '12号',
+    luckyItem: '水晶',
   },
   {
     id: 13,
@@ -168,6 +207,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中可能有重大变化，旧的模式需要被打破。',
     wealthFortune: '财运方面需要做出改变，旧的理财方式不再适用。',
     healthFortune: '注意身体的信号，可能需要改变不健康的生活习惯。',
+    luckyColor: '黑色',
+    luckyNumber: '13号',
+    luckyItem: '黑曜石',
   },
   {
     id: 14,
@@ -180,6 +222,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作稳步推进，脚踏实地会有好的结果。',
     wealthFortune: '财运平稳，量入为出，合理规划收支。',
     healthFortune: '身心平衡的一天，注意饮食有度，作息规律。',
+    luckyColor: '水绿色',
+    luckyNumber: '14号',
+    luckyItem: '圣杯',
   },
   {
     id: 15,
@@ -192,6 +237,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中可能面临诱惑，坚守原则才能走得更远。',
     wealthFortune: '财运有诱惑陷阱，不要贪图小利而损失更多。',
     healthFortune: '注意节制欲望，避免过度消耗身体。',
+    luckyColor: '暗红色',
+    luckyNumber: '15号',
+    luckyItem: '锁链',
   },
   {
     id: 16,
@@ -204,6 +252,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中可能有意外变故，但塞翁失马焉知非福。',
     wealthFortune: '财运有波动，注意规避风险，不要把鸡蛋放在一个篮子里。',
     healthFortune: '注意安全，避免意外发生，尤其是高处和尖锐物品。',
+    luckyColor: '闪电黄',
+    luckyNumber: '16号',
+    luckyItem: '闪电',
   },
   {
     id: 17,
@@ -216,6 +267,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '灵感迸发的一天，创意和想法会得到赞赏。',
     wealthFortune: '财运向好，可能有意外收获或好消息。',
     healthFortune: '身心状态良好，适合养生和调理。',
+    luckyColor: '天蓝色',
+    luckyNumber: '17号',
+    luckyItem: '星星项链',
   },
   {
     id: 18,
@@ -228,6 +282,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作中情况不明朗，谨慎行事，不要轻易做决定。',
     wealthFortune: '财运不明朗，避免投资和借贷。',
     healthFortune: '注意情绪和心理健康，可能会有焦虑或失眠。',
+    luckyColor: '银灰色',
+    luckyNumber: '18号',
+    luckyItem: '月光石',
   },
   {
     id: 19,
@@ -240,6 +297,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '事业蒸蒸日上，努力会得到丰厚回报。',
     wealthFortune: '财运旺盛，收入增加，投资有好的回报。',
     healthFortune: '精力充沛，心情愉快，身体状态极佳。',
+    luckyColor: '金黄色',
+    luckyNumber: '19号',
+    luckyItem: '向日葵',
   },
   {
     id: 20,
@@ -252,6 +312,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '工作会有新的转机，可能有升职或跳槽的机会。',
     wealthFortune: '财运有新的机遇，把握好时机可以获得不错的收益。',
     healthFortune: '身体状态回升，适合开始新的健康计划。',
+    luckyColor: '玫瑰色',
+    luckyNumber: '20号',
+    luckyItem: '号角',
   },
   {
     id: 21,
@@ -264,6 +327,9 @@ export const tarotCards: TarotCard[] = [
     careerFortune: '项目圆满完成，成就得到认可，是总结和庆祝的好时机。',
     wealthFortune: '财运圆满，之前的努力都有了回报，收入可观。',
     healthFortune: '身心状态都达到最佳，享受这份圆满和满足。',
+    luckyColor: '翠绿色',
+    luckyNumber: '21号',
+    luckyItem: '地球仪',
   },
 ];
 

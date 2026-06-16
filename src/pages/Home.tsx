@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import TarotCard from '@/components/TarotCard';
 import CardReading from '@/components/CardReading';
+import LuckyItems from '@/components/LuckyItems';
 import ShareImageModal from '@/components/ShareImageModal';
 import MeditationCountdown from '@/components/MeditationCountdown';
 import { generateShareImage } from '@/utils/shareImage';
@@ -113,6 +114,7 @@ export default function Home() {
       {currentCard && !isFlipping && (
         <div className="w-full animate-fade-in space-y-6">
           <CardReading card={currentCard} />
+          <LuckyItems card={currentCard} />
 
           <div className="flex justify-center">
             <button

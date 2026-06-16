@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { X, Heart, Briefcase, Coins, Activity, Sparkles } from 'lucide-react';
 import type { TarotCard } from '@/types';
+import LuckyItems from '@/components/LuckyItems';
 
 interface CardDetailModalProps {
   card: TarotCard | null;
@@ -92,6 +93,10 @@ export default function CardDetailModal({ card, onClose }: CardDetailModalProps)
               </div>
               <p className="text-gray-300 text-sm leading-relaxed">{card.healthFortune}</p>
             </div>
+          </div>
+
+          <div className="mt-8">
+            <LuckyItems card={card} />
           </div>
         </div>
       </div>

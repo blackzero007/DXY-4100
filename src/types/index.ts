@@ -9,6 +9,9 @@ export interface TarotCard {
   careerFortune: string;
   wealthFortune: string;
   healthFortune: string;
+  luckyColor: string;
+  luckyNumber: string;
+  luckyItem: string;
 }
 
 export interface DrawRecord {
