@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { TarotState, TarotCard, DrawRecord } from '@/types';
+import type { TarotState, TarotCard, DrawRecord, MoodEntry } from '@/types';
 import { tarotCards, DAILY_DRAW_LIMIT } from '@/data/tarotCards';
 import { storage } from '@/utils/storage';
 import { getTodayString, generateId } from '@/utils/date';
@@ -7,6 +7,7 @@ import { getTodayString, generateId } from '@/utils/date';
 const STORAGE_KEY_HISTORY = 'draw_history';
 const STORAGE_KEY_LAST_DATE = 'last_draw_date';
 const STORAGE_KEY_TODAY_COUNT = 'today_draw_count';
+const STORAGE_KEY_MOODS = 'mood_entries';
 
 const getInitialState = () => {
   const lastDrawDate = storage.get<string>(STORAGE_KEY_LAST_DATE, '');
@@ -15,6 +16,7 @@ const getInitialState = () => {
     ? storage.get<number>(STORAGE_KEY_TODAY_COUNT, 0)
     : 0;
   const drawHistory = storage.get<DrawRecord[]>(STORAGE_KEY_HISTORY, []);
+  const moodEntries = storage.get<MoodEntry[]>(STORAGE_KEY_MOODS, []);
 
   return {
     todayDrawCount,
@@ -22,6 +24,7 @@ const getInitialState = () => {
     drawHistory,
     currentCard: null,
     isFlipping: false,
+    moodEntries,
   };
 };
 
@@ -79,5 +82,38 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
   canDrawToday: () => {
     return get().getRemainingDraws() > 0;
+  },
+
+  addMoodEntry: (recordId: string, content: string) => {
+    const today = getTodayString();
+    const newMood: MoodEntry = {
+      id: generateId(),
+      recordId,
+      content,
+      date: today,
+      timestamp: Date.now(),
+    };
+
+    const newMoods = [newMood, ...get().moodEntries];
+    set({ moodEntries: newMoods });
+    storage.set(STORAGE_KEY_MOODS, newMoods);
+  },
+
+  updateMoodEntry: (moodId: string, content: string) => {
+    const newMoods = get().moodEntries.map((mood) =>
+      mood.id === moodId ? { ...mood, content, timestamp: Date.now() } : mood
+    );
+    set({ moodEntries: newMoods });
+    storage.set(STORAGE_KEY_MOODS, newMoods);
+  },
+
+  deleteMoodEntry: (moodId: string) => {
+    const newMoods = get().moodEntries.filter((mood) => mood.id !== moodId);
+    set({ moodEntries: newMoods });
+    storage.set(STORAGE_KEY_MOODS, newMoods);
+  },
+
+  getMoodByRecordId: (recordId: string) => {
+    return get().moodEntries.find((mood) => mood.recordId === recordId);
   },
 }));

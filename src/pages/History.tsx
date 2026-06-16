@@ -1,12 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import { tarotCards } from '@/data/tarotCards';
 import { formatDate } from '@/utils/date';
-import { History, BarChart3, Trophy, Calendar } from 'lucide-react';
-import type { TarotCard } from '@/types';
+import { History, BarChart3, Trophy, Calendar, Heart, Pencil } from 'lucide-react';
+import MoodModal from '@/components/MoodModal';
+import type { TarotCard, DrawRecord, MoodEntry } from '@/types';
 
 export default function HistoryPage() {
-  const { drawHistory } = useTarotStore();
+  const { drawHistory, addMoodEntry, updateMoodEntry, deleteMoodEntry, getMoodByRecordId } = useTarotStore();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentRecord, setCurrentRecord] = useState<DrawRecord | null>(null);
+  const [currentMood, setCurrentMood] = useState<MoodEntry | undefined>(undefined);
 
   const stats = useMemo(() => {
     const totalDraws = drawHistory.length;
@@ -43,6 +47,28 @@ export default function HistoryPage() {
   }, [drawHistory]);
 
   const getCardById = (id: number) => tarotCards.find((c) => c.id === id);
+
+  const handleOpenMoodModal = (record: DrawRecord) => {
+    setCurrentRecord(record);
+    setCurrentMood(getMoodByRecordId(record.id));
+    setModalOpen(true);
+  };
+
+  const handleSaveMood = (content: string) => {
+    if (!currentRecord) return;
+    if (currentMood) {
+      updateMoodEntry(currentMood.id, content);
+    } else {
+      addMoodEntry(currentRecord.id, content);
+    }
+  };
+
+  const handleDeleteMood = () => {
+    if (currentMood) {
+      deleteMoodEntry(currentMood.id);
+      setModalOpen(false);
+    }
+  };
 
   return (
     <div className="min-h-screen px-4 py-20">
@@ -122,6 +148,7 @@ export default function HistoryPage() {
                     {records.map((record) => {
                       const card = getCardById(record.cardId);
                       if (!card) return null;
+                      const mood = getMoodByRecordId(record.id);
                       return (
                         <div
                           key={record.id}
@@ -144,7 +171,37 @@ export default function HistoryPage() {
                                 {card.meaning}
                               </p>
                             </div>
+                            <button
+                              onClick={() => handleOpenMoodModal(record)}
+                              className={`flex-shrink-0 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                                mood
+                                  ? 'bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30'
+                                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30'
+                              }`}
+                            >
+                              {mood ? (
+                                <>
+                                  <Heart className="w-4 h-4 fill-current" />
+                                  已写
+                                </>
+                              ) : (
+                                <>
+                                  <Pencil className="w-4 h-4" />
+                                  写心情
+                                </>
+                              )}
+                            </button>
                           </div>
+                          {mood && (
+                            <div className="mt-3 pt-3 border-t border-amber-500/10">
+                              <div className="flex items-start gap-2">
+                                <Heart className="w-4 h-4 text-pink-400 flex-shrink-0 mt-0.5" />
+                                <p className="text-gray-300 text-sm leading-relaxed line-clamp-3">
+                                  {mood.content}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -155,6 +212,15 @@ export default function HistoryPage() {
           )}
         </div>
       </div>
+
+      <MoodModal
+        isOpen={modalOpen}
+        initialContent={currentMood?.content}
+        moodId={currentMood?.id}
+        onClose={() => setModalOpen(false)}
+        onSave={handleSaveMood}
+        onDelete={handleDeleteMood}
+      />
     </div>
   );
 }
