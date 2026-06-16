@@ -13,6 +13,7 @@ export default function HistoryPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<DrawRecord | null>(null);
   const [currentMood, setCurrentMood] = useState<MoodEntry | undefined>(undefined);
+  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const stats = useMemo(() => {
     const totalDraws = drawHistory.length;
@@ -38,15 +39,20 @@ export default function HistoryPage() {
     return { totalDraws, mostFrequentCard, mostFrequentCount: maxCount, uniqueDays };
   }, [drawHistory]);
 
+  const filteredHistory = useMemo(() => {
+    if (selectedCardId === null) return drawHistory;
+    return drawHistory.filter((record) => record.cardId === selectedCardId);
+  }, [drawHistory, selectedCardId]);
+
   const groupedByDate = useMemo(() => {
     const groups = new Map<string, typeof drawHistory>();
-    drawHistory.forEach((record) => {
+    filteredHistory.forEach((record) => {
       const dateRecords = groups.get(record.date) || [];
       dateRecords.push(record);
       groups.set(record.date, dateRecords);
     });
     return Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0]));
-  }, [drawHistory]);
+  }, [filteredHistory]);
 
   const getCardById = (id: number) => tarotCards.find((c) => c.id === id);
 
@@ -155,9 +161,37 @@ export default function HistoryPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            <History className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
-            <h2 className="text-xl font-serif" style={{ color: 'var(--text-primary)' }}>抽牌记录</h2>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <History className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+              <h2 className="text-xl font-serif" style={{ color: 'var(--text-primary)' }}>抽牌记录</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                按牌名筛选：
+              </label>
+              <select
+                value={selectedCardId ?? ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedCardId(value === '' ? null : Number(value));
+                  playSound('buttonClick');
+                }}
+                className="px-3 py-2 rounded-lg text-sm outline-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--card-bg)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-accent)',
+                }}
+              >
+                <option value="">全部</option>
+                {tarotCards.map((card) => (
+                  <option key={card.id} value={card.id}>
+                    {card.symbol} {card.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {groupedByDate.length === 0 ? (
