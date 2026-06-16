@@ -9,9 +9,18 @@ export interface TarotCard {
   careerFortune: string;
   wealthFortune: string;
   healthFortune: string;
+  reversedMeaning: string;
+  reversedLoveFortune: string;
+  reversedCareerFortune: string;
+  reversedWealthFortune: string;
+  reversedHealthFortune: string;
   luckyColor: string;
   luckyNumber: string;
   luckyItem: string;
+}
+
+export interface DrawnCard extends TarotCard {
+  isReversed: boolean;
 }
 
 export interface DrawRecord {
@@ -19,6 +28,7 @@ export interface DrawRecord {
   cardId: number;
   date: string;
   timestamp: number;
+  isReversed: boolean;
 }
 
 export interface MoodEntry {
@@ -33,7 +43,7 @@ export interface TarotState {
   todayDrawCount: number;
   lastDrawDate: string;
   drawHistory: DrawRecord[];
-  currentCard: TarotCard | null;
+  currentCard: DrawnCard | null;
   isFlipping: boolean;
   moodEntries: MoodEntry[];
   drawCard: () => void;

@@ -6,7 +6,7 @@ import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database } from 'l
 import MoodModal from '@/components/MoodModal';
 import DataBackupButtons from '@/components/DataBackupButtons';
 import { playSound } from '@/utils/soundManager';
-import type { TarotCard, DrawRecord, MoodEntry } from '@/types';
+import type { TarotCard, DrawnCard, DrawRecord, MoodEntry } from '@/types';
 
 export default function HistoryPage() {
   const { drawHistory, addMoodEntry, updateMoodEntry, deleteMoodEntry, getMoodByRecordId } = useTarotStore();
@@ -228,6 +228,12 @@ export default function HistoryPage() {
                       const card = getCardById(record.cardId);
                       if (!card) return null;
                       const mood = getMoodByRecordId(record.id);
+                      const isReversed = record.isReversed ?? false;
+                      const meaning = isReversed ? card.reversedMeaning : card.meaning;
+                      const drawnCard: DrawnCard = {
+                        ...card,
+                        isReversed,
+                      };
                       return (
                         <div
                           key={record.id}
@@ -245,19 +251,30 @@ export default function HistoryPage() {
                         >
                           <div className="flex items-center gap-4">
                             <div
-                              className={`w-14 h-20 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center text-2xl shadow-lg flex-shrink-0`}
+                              className={`w-14 h-20 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center text-2xl shadow-lg flex-shrink-0 ${isReversed ? 'rotate-180' : ''}`}
                             >
                               {card.symbol}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                                {card.name}
-                              </h4>
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-medium" style={{ color: 'var(--text-primary)' }}>
+                                  {card.name}
+                                </h4>
+                                <span
+                                  className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                                    isReversed
+                                      ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                      : 'bg-green-500/20 text-green-300 border border-green-500/30'
+                                  }`}
+                                >
+                                  {isReversed ? '逆位' : '正位'}
+                                </span>
+                              </div>
                               <p className="text-xs" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
                                 {card.nameEn}
                               </p>
                               <p className="text-sm mt-1 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>
-                                {card.meaning}
+                                {meaning}
                               </p>
                             </div>
                             <button

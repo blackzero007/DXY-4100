@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { TarotCard } from '@/types';
+import type { DrawnCard } from '@/types';
 import { playSound } from '@/utils/soundManager';
 
 interface TarotCardProps {
-  card: TarotCard | null;
+  card: DrawnCard | null;
   isFlipping: boolean;
   onClick: () => void;
   disabled?: boolean;
@@ -158,7 +158,7 @@ export default function TarotCardComponent({
         <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl overflow-hidden shadow-2xl">
           {card ? (
             <div
-              className={`w-full h-full bg-gradient-to-br ${card.color} flex flex-col items-center justify-center p-6 border-4 border-amber-400/60`}
+              className={`w-full h-full bg-gradient-to-br ${card.color} flex flex-col items-center justify-center p-6 border-4 border-amber-400/60 ${card.isReversed ? 'rotate-180' : ''}`}
             >
               <div className="absolute inset-0 bg-black/10" />
               <div className="absolute top-3 left-3 text-white/70 text-xs font-serif">

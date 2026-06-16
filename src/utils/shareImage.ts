@@ -1,4 +1,4 @@
-import type { TarotCard } from '@/types';
+import type { DrawnCard } from '@/types';
 import { formatDate, getTodayString } from './date';
 
 const CANVAS_WIDTH = 750;
@@ -58,7 +58,13 @@ function drawDecorativeCorner(
   ctx.restore();
 }
 
-export async function generateShareImage(card: TarotCard): Promise<string> {
+export async function generateShareImage(card: DrawnCard): Promise<string> {
+  const { isReversed } = card;
+  const meaning = isReversed ? card.reversedMeaning : card.meaning;
+  const loveFortune = isReversed ? card.reversedLoveFortune : card.loveFortune;
+  const careerFortune = isReversed ? card.reversedCareerFortune : card.careerFortune;
+  const wealthFortune = isReversed ? card.reversedWealthFortune : card.wealthFortune;
+  const healthFortune = isReversed ? card.reversedHealthFortune : card.healthFortune;
   const canvas = document.createElement('canvas');
   canvas.width = CANVAS_WIDTH;
   canvas.height = CANVAS_HEIGHT;
@@ -219,7 +225,15 @@ export async function generateShareImage(card: TarotCard): Promise<string> {
   ctx.fillStyle = '#ffffff';
   ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
   ctx.shadowBlur = 20;
-  ctx.fillText(card.symbol, CANVAS_WIDTH / 2, cardStartY + 170);
+  if (isReversed) {
+    ctx.save();
+    ctx.translate(CANVAS_WIDTH / 2, cardStartY + 170);
+    ctx.rotate(Math.PI);
+    ctx.fillText(card.symbol, 0, 0);
+    ctx.restore();
+  } else {
+    ctx.fillText(card.symbol, CANVAS_WIDTH / 2, cardStartY + 170);
+  }
   ctx.shadowBlur = 0;
 
   ctx.fillStyle = '#ffffff';
@@ -247,6 +261,10 @@ export async function generateShareImage(card: TarotCard): Promise<string> {
   ctx.font = 'bold 22px "Noto Serif SC", serif';
   ctx.textAlign = 'left';
   ctx.fillText('✦ 综合运势', PADDING + 30, currentY);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = isReversed ? '#f87171' : '#4ade80';
+  ctx.font = 'bold 18px "Noto Serif SC", serif';
+  ctx.fillText(isReversed ? '逆位' : '正位', CANVAS_WIDTH - PADDING - 30, currentY);
   currentY += 20;
 
   ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)';
@@ -262,7 +280,7 @@ export async function generateShareImage(card: TarotCard): Promise<string> {
   ctx.textAlign = 'left';
   currentY = wrapText(
     ctx,
-    card.meaning,
+    meaning,
     PADDING + 30,
     currentY,
     contentWidth,
@@ -274,10 +292,10 @@ export async function generateShareImage(card: TarotCard): Promise<string> {
   const sectionW = (contentWidth - 20) / 2;
   const sectionH = 130;
   const sections = [
-    { label: '感情', color: '#f472b6', icon: '♥', text: card.loveFortune },
-    { label: '事业', color: '#60a5fa', icon: '◆', text: card.careerFortune },
-    { label: '财运', color: '#fbbf24', icon: '●', text: card.wealthFortune },
-    { label: '健康', color: '#34d399', icon: '▲', text: card.healthFortune },
+    { label: '感情', color: '#f472b6', icon: '♥', text: loveFortune },
+    { label: '事业', color: '#60a5fa', icon: '◆', text: careerFortune },
+    { label: '财运', color: '#fbbf24', icon: '●', text: wealthFortune },
+    { label: '健康', color: '#34d399', icon: '▲', text: healthFortune },
   ];
 
   sections.forEach((sec, idx) => {

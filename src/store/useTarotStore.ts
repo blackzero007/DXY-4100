@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { TarotState, TarotCard, DrawRecord, MoodEntry, BackupData, ImportResult } from '@/types';
+import type { TarotState, TarotCard, DrawnCard, DrawRecord, MoodEntry, BackupData, ImportResult } from '@/types';
 import { tarotCards, DAILY_DRAW_LIMIT } from '@/data/tarotCards';
 import { storage } from '@/utils/storage';
 import { getTodayString, generateId } from '@/utils/date';
@@ -45,6 +45,12 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
     const randomIndex = Math.floor(Math.random() * tarotCards.length);
     const card: TarotCard = tarotCards[randomIndex];
+    const isReversed = Math.random() < 0.5;
+
+    const drawnCard: DrawnCard = {
+      ...card,
+      isReversed,
+    };
 
     set({ isFlipping: true, currentCard: null });
 
@@ -55,6 +61,7 @@ export const useTarotStore = create<TarotState>((set, get) => ({
         cardId: card.id,
         date: today,
         timestamp: Date.now(),
+        isReversed,
       };
 
       const newHistory = [newRecord, ...get().drawHistory];
@@ -63,7 +70,7 @@ export const useTarotStore = create<TarotState>((set, get) => ({
       playSound('cardReveal');
 
       set({
-        currentCard: card,
+        currentCard: drawnCard,
         isFlipping: false,
         todayDrawCount: newCount,
         lastDrawDate: today,
