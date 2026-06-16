@@ -60,13 +60,32 @@ export default function ZodiacSelector({ selectedSign, onSelect, autoSelectOnMat
   return (
     <div className="space-y-4">
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <Search
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5"
+          style={{ color: 'var(--text-secondary)' }}
+        />
         <input
           type="text"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="输入星座名称，如：白羊座、狮子..."
-          className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-gray-100 placeholder:text-gray-500 focus:outline-none focus:border-amber-500/50 focus:bg-white/10 transition-all"
+          className="w-full pl-12 pr-4 py-3.5 rounded-xl focus:outline-none transition-all"
+          style={{
+            backgroundColor: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
+            color: 'var(--text-primary)',
+            opacity: 0.7,
+          }}
+          onFocus={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--card-bg)';
+            (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent-hover)';
+            (e.currentTarget as HTMLElement).style.opacity = '1';
+          }}
+          onBlur={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--card-bg)';
+            (e.currentTarget as HTMLElement).style.borderColor = 'var(--card-border)';
+            (e.currentTarget as HTMLElement).style.opacity = '0.7';
+          }}
         />
         {searchText && (
           <button
@@ -74,7 +93,14 @@ export default function ZodiacSelector({ selectedSign, onSelect, autoSelectOnMat
               setSearchText('');
               setError('');
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
+            style={{ color: 'var(--text-secondary)' }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+            }}
           >
             ✕
           </button>
@@ -82,13 +108,19 @@ export default function ZodiacSelector({ selectedSign, onSelect, autoSelectOnMat
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 px-4 py-3 bg-rose-500/10 border border-rose-500/30 rounded-xl">
-          <span className="text-rose-300 text-sm">{error}</span>
+        <div
+          className="flex items-center gap-2 px-4 py-3 rounded-xl"
+          style={{
+            backgroundColor: 'var(--limit-bg)',
+            border: '1px solid var(--limit-border)',
+          }}
+        >
+          <span className="text-sm" style={{ color: 'var(--limit-text)' }}>{error}</span>
         </div>
       )}
 
       {!error && searchText && filteredSigns.length > 1 && (
-        <p className="text-sm text-amber-300 px-1">
+        <p className="text-sm px-1" style={{ color: 'var(--text-accent)' }}>
           找到 {filteredSigns.length} 个匹配的星座，请点击选择
         </p>
       )}
@@ -100,12 +132,26 @@ export default function ZodiacSelector({ selectedSign, onSelect, autoSelectOnMat
             <button
               key={sign.id}
               onClick={() => handleSelect(sign)}
-              className={`group relative flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-300 animate-fade-in ${
-                isSelected
-                  ? 'bg-amber-500/20 border-amber-400/70 shadow-lg shadow-amber-500/20'
-                  : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-amber-500/40'
-              }`}
-              style={{ animationDelay: `${index * 40}ms` }}
+              className="group relative flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-300 animate-fade-in"
+              style={{
+                animationDelay: `${index * 40}ms`,
+                backgroundColor: isSelected ? 'var(--accent-light)' : 'var(--card-bg)',
+                borderColor: isSelected ? 'var(--accent-color)' : 'var(--card-border)',
+                boxShadow: isSelected ? '0 10px 15px -3px var(--accent-light), 0 4px 6px -4px var(--accent-light)' : 'none',
+              }}
+              onMouseEnter={(e) => {
+                if (!isSelected) {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--accent-light)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent-hover)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSelected) {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--card-bg)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--card-border)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                }
+              }}
             >
               <div
                 className={`text-3xl transition-transform duration-300 ${
@@ -115,16 +161,28 @@ export default function ZodiacSelector({ selectedSign, onSelect, autoSelectOnMat
                 {sign.symbol}
               </div>
               <span
-                className={`text-xs font-medium transition-colors ${
-                  isSelected ? 'text-amber-200' : 'text-gray-300 group-hover:text-amber-200'
-                }`}
+                className="text-xs font-medium transition-colors"
+                style={{ color: isSelected ? 'var(--text-accent)' : 'var(--text-primary)' }}
               >
                 {sign.name}
               </span>
-              <span className="text-[10px] text-gray-500">{sign.dateRange}</span>
+              <span
+                className="text-[10px]"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                {sign.dateRange}
+              </span>
               {isSelected && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-purple-950" fill="currentColor" viewBox="0 0 20 20">
+                <div
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--accent-color)' }}
+                >
+                  <svg
+                    className="w-2.5 h-2.5"
+                    style={{ color: 'var(--bg-primary)' }}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
