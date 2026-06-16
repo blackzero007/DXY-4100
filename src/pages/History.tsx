@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import { tarotCards } from '@/data/tarotCards';
-import { formatDate } from '@/utils/date';
-import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database } from 'lucide-react';
+import { formatDate, getTodayString } from '@/utils/date';
+import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database, Sparkles } from 'lucide-react';
 import MoodModal from '@/components/MoodModal';
 import DataBackupButtons from '@/components/DataBackupButtons';
 import { playSound } from '@/utils/soundManager';
@@ -38,7 +38,52 @@ export default function HistoryPage() {
 
     const uniqueDays = new Set(drawHistory.map((r) => r.date)).size;
 
-    return { totalDraws, mostFrequentCard, mostFrequentCount: maxCount, uniqueDays };
+    const today = getTodayString();
+    const todayRecords = drawHistory.filter((r) => r.date === today);
+
+    let todayFortune: 'good' | 'stable' | 'caution' | null = null;
+    if (todayRecords.length > 0) {
+      const goodKeywords = ['顺利', '成功', '希望', '收获', '好运', '美好', '积极', '进步', '成长', '胜利'];
+      const cautionKeywords = ['困难', '挑战', '恐惧', '阻碍', '失败', '风险', '谨慎', '危险', '损失', '欺骗'];
+      const stableKeywords = ['平衡', '等待', '思考', '稳定', '平静', '内省', '规划', '沉稳', '保持', '积累'];
+
+      let goodScore = 0;
+      let cautionScore = 0;
+      let stableScore = 0;
+
+      todayRecords.forEach((record) => {
+        const card = tarotCards.find((c) => c.id === record.cardId);
+        if (!card) return;
+        const meaning = record.isReversed ? card.reversedMeaning : card.meaning;
+        const allFortune = [
+          meaning,
+          record.isReversed ? card.reversedLoveFortune : card.loveFortune,
+          record.isReversed ? card.reversedCareerFortune : card.careerFortune,
+          record.isReversed ? card.reversedWealthFortune : card.wealthFortune,
+          record.isReversed ? card.reversedHealthFortune : card.healthFortune,
+        ].join('');
+
+        goodKeywords.forEach((kw) => {
+          if (allFortune.includes(kw)) goodScore++;
+        });
+        cautionKeywords.forEach((kw) => {
+          if (allFortune.includes(kw)) cautionScore++;
+        });
+        stableKeywords.forEach((kw) => {
+          if (allFortune.includes(kw)) stableScore++;
+        });
+      });
+
+      if (goodScore >= cautionScore && goodScore >= stableScore) {
+        todayFortune = 'good';
+      } else if (cautionScore > goodScore && cautionScore >= stableScore) {
+        todayFortune = 'caution';
+      } else {
+        todayFortune = 'stable';
+      }
+    }
+
+    return { totalDraws, mostFrequentCard, mostFrequentCount: maxCount, uniqueDays, todayFortune, todayDrawCount: todayRecords.length };
   }, [drawHistory]);
 
   const filteredHistory = useMemo(() => {
@@ -142,22 +187,52 @@ export default function HistoryPage() {
           </div>
 
           <div
-            className="backdrop-blur-sm rounded-xl p-4 col-span-2 sm:col-span-2"
+            className="backdrop-blur-sm rounded-xl p-4"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-accent)' }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>今日运势</span>
+            </div>
+            {stats.todayFortune ? (
+              <div className="flex flex-col gap-1">
+                <span
+                  className={`inline-block px-2 py-1 rounded-full text-xs font-medium w-fit ${
+                    stats.todayFortune === 'good'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                      : stats.todayFortune === 'caution'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  }`}
+                >
+                  {stats.todayFortune === 'good' ? '运势好' : stats.todayFortune === 'caution' ? '需注意' : '运势平稳'}
+                </span>
+                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                  今日 {stats.todayDrawCount} 张牌
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>暂无抽牌</p>
+            )}
+          </div>
+
+          <div
+            className="backdrop-blur-sm rounded-xl p-4"
             style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-accent)' }}
           >
             <div className="flex items-center gap-2 mb-2">
               <Trophy className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>最常出现的牌</span>
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>最常出现</span>
             </div>
             {stats.mostFrequentCard ? (
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{stats.mostFrequentCard.symbol}</span>
-                <div>
-                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{stats.mostFrequentCard.symbol}</span>
+                <div className="min-w-0">
+                  <p className="font-medium text-sm truncate" style={{ color: 'var(--text-primary)' }}>
                     {stats.mostFrequentCard.name}
                   </p>
                   <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    出现 {stats.mostFrequentCount} 次
+                    {stats.mostFrequentCount} 次
                   </p>
                 </div>
               </div>
