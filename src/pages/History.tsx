@@ -4,6 +4,7 @@ import { tarotCards } from '@/data/tarotCards';
 import { formatDate } from '@/utils/date';
 import { History, BarChart3, Trophy, Calendar, Heart, Pencil } from 'lucide-react';
 import MoodModal from '@/components/MoodModal';
+import { playSound } from '@/utils/soundManager';
 import type { TarotCard, DrawRecord, MoodEntry } from '@/types';
 
 export default function HistoryPage() {
@@ -51,11 +52,14 @@ export default function HistoryPage() {
   const handleOpenMoodModal = (record: DrawRecord) => {
     setCurrentRecord(record);
     setCurrentMood(getMoodByRecordId(record.id));
+    playSound('buttonClick');
+    playSound('modalOpen');
     setModalOpen(true);
   };
 
   const handleSaveMood = (content: string) => {
     if (!currentRecord) return;
+    playSound('success');
     if (currentMood) {
       updateMoodEntry(currentMood.id, content);
     } else {
@@ -65,6 +69,8 @@ export default function HistoryPage() {
 
   const handleDeleteMood = () => {
     if (currentMood) {
+      playSound('buttonClick');
+      playSound('modalClose');
       deleteMoodEntry(currentMood.id);
       setModalOpen(false);
     }

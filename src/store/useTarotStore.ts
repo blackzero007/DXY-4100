@@ -3,6 +3,7 @@ import type { TarotState, TarotCard, DrawRecord, MoodEntry } from '@/types';
 import { tarotCards, DAILY_DRAW_LIMIT } from '@/data/tarotCards';
 import { storage } from '@/utils/storage';
 import { getTodayString, generateId } from '@/utils/date';
+import { playSound } from '@/utils/soundManager';
 
 const STORAGE_KEY_HISTORY = 'draw_history';
 const STORAGE_KEY_LAST_DATE = 'last_draw_date';
@@ -51,6 +52,8 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
       const newHistory = [newRecord, ...get().drawHistory];
       const newCount = get().todayDrawCount + 1;
+
+      playSound('cardReveal');
 
       set({
         currentCard: card,

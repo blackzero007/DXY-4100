@@ -3,9 +3,16 @@ import { BookOpen } from 'lucide-react';
 import { tarotCards } from '@/data/tarotCards';
 import type { TarotCard } from '@/types';
 import CardDetailModal from '@/components/CardDetailModal';
+import { playSound } from '@/utils/soundManager';
 
 export default function TarotIndex() {
   const [selectedCard, setSelectedCard] = useState<TarotCard | null>(null);
+
+  const handleCardClick = (card: TarotCard) => {
+    playSound('buttonClick');
+    playSound('modalOpen');
+    setSelectedCard(card);
+  };
 
   return (
     <div className="min-h-screen px-4 py-20">
@@ -24,7 +31,7 @@ export default function TarotIndex() {
           {tarotCards.map((card, index) => (
             <div
               key={card.id}
-              onClick={() => setSelectedCard(card)}
+              onClick={() => handleCardClick(card)}
               className="group cursor-pointer animate-fade-in"
               style={{ animationDelay: `${index * 30}ms` }}
             >

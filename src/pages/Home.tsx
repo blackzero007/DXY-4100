@@ -6,6 +6,7 @@ import LuckyItems from '@/components/LuckyItems';
 import ShareImageModal from '@/components/ShareImageModal';
 import MeditationCountdown from '@/components/MeditationCountdown';
 import { generateShareImage } from '@/utils/shareImage';
+import { playSound } from '@/utils/soundManager';
 import { Sparkles, AlertCircle, Share2, Wind, CloudFog } from 'lucide-react';
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
 
   const handleDraw = () => {
     if (canDraw && !isFlipping && !isMeditating) {
+      playSound('drawCard');
       if (meditationMode) {
         setIsMeditating(true);
       } else {
@@ -33,11 +35,14 @@ export default function Home() {
 
   const handleMeditationComplete = useCallback(() => {
     setIsMeditating(false);
+    playSound('drawCard');
     drawCard();
   }, [drawCard]);
 
   const handleGenerateShare = async () => {
     if (!currentCard) return;
+    playSound('buttonClick');
+    playSound('modalOpen');
     setShareModalOpen(true);
     setShareImageData(null);
     setIsGenerating(true);
@@ -71,7 +76,10 @@ export default function Home() {
         </div>
 
         <button
-          onClick={() => setMeditationMode(!meditationMode)}
+          onClick={() => {
+            playSound('buttonClick');
+            setMeditationMode(!meditationMode);
+          }}
           disabled={isFlipping || isMeditating || !!currentCard}
           className={`group flex items-center gap-1.5 px-4 py-2 rounded-full border transition-all duration-300 ${
             meditationMode

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { X, Download, Loader2, Smartphone } from 'lucide-react';
+import { playSound } from '@/utils/soundManager';
 
 interface ShareImageModalProps {
   open: boolean;
@@ -18,10 +19,15 @@ export default function ShareImageModal({
 }: ShareImageModalProps) {
   const [copiedTip, setCopiedTip] = useState(false);
 
+  const handleClose = useCallback(() => {
+    playSound('modalClose');
+    onClose();
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
@@ -29,10 +35,12 @@ export default function ShareImageModal({
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [open, onClose]);
+  }, [open, handleClose]);
 
   const handleDownload = async () => {
     if (!imageDataUrl) return;
+    playSound('buttonClick');
+    playSound('success');
     try {
       const link = document.createElement('a');
       link.href = imageDataUrl;
@@ -52,7 +60,7 @@ export default function ShareImageModal({
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-fade-in"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
 
@@ -61,7 +69,7 @@ export default function ShareImageModal({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute -top-12 right-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors z-10"
         >
           <X className="w-5 h-5" />

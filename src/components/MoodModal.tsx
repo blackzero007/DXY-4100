@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { X, Heart, Trash2 } from 'lucide-react';
+import { playSound } from '@/utils/soundManager';
 
 interface MoodModalProps {
   isOpen: boolean;
@@ -43,15 +44,22 @@ export default function MoodModal({
 
   const handleSave = () => {
     if (content.trim()) {
+      playSound('success');
+      playSound('modalClose');
       onSave(content.trim());
       onClose();
     }
   };
 
+  const handleClose = () => {
+    playSound('modalClose');
+    onClose();
+  };
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
@@ -60,7 +68,7 @@ export default function MoodModal({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-gray-300 hover:text-white transition-colors z-10"
         >
           <X className="w-5 h-5" />
@@ -105,7 +113,7 @@ export default function MoodModal({
           )}
           <div className="flex-1" />
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="px-5 py-2.5 rounded-xl border border-gray-500/30 text-gray-300 hover:bg-gray-500/10 transition-colors"
           >
             取消

@@ -1,14 +1,19 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Sparkles, History, BookOpen } from 'lucide-react';
+import { playSound } from '@/utils/soundManager';
 
 export default function NavBar() {
   const location = useLocation();
+
+  const handleNavClick = () => {
+    playSound('navClick');
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-purple-950/95 to-purple-950/70 backdrop-blur-md border-b border-amber-500/20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group" onClick={handleNavClick}>
             <Sparkles className="w-6 h-6 text-amber-400 group-hover:text-amber-300 transition-colors" />
             <span className="text-xl font-serif text-amber-100 group-hover:text-white transition-colors">
               塔罗占卜
@@ -18,6 +23,7 @@ export default function NavBar() {
           <div className="flex items-center gap-4">
             <Link
               to="/"
+              onClick={handleNavClick}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 location.pathname === '/'
                   ? 'text-amber-300 bg-amber-500/10'
@@ -29,6 +35,7 @@ export default function NavBar() {
             </Link>
             <Link
               to="/history"
+              onClick={handleNavClick}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 location.pathname === '/history'
                   ? 'text-amber-300 bg-amber-500/10'
@@ -40,6 +47,7 @@ export default function NavBar() {
             </Link>
             <Link
               to="/tarot-index"
+              onClick={handleNavClick}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 location.pathname === '/tarot-index'
                   ? 'text-amber-300 bg-amber-500/10'

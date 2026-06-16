@@ -1,4 +1,5 @@
 import type { TarotCard } from '@/types';
+import { playSound } from '@/utils/soundManager';
 
 interface TarotCardProps {
   card: TarotCard | null;
@@ -15,12 +16,18 @@ export default function TarotCardComponent({
 }: TarotCardProps) {
   const isFlipped = card !== null || isFlipping;
 
+  const handleClick = () => {
+    if (disabled) return;
+    playSound('cardFlip');
+    onClick();
+  };
+
   return (
     <div
       className={`relative w-64 h-96 sm:w-72 sm:h-[28rem] perspective-1000 ${
         disabled ? 'cursor-not-allowed' : 'cursor-pointer'
       }`}
-      onClick={disabled ? undefined : onClick}
+      onClick={disabled ? undefined : handleClick}
     >
       <div
         className={`relative w-full h-full transition-transform duration-1500 transform-style-preserve-3d ${

@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { X, Heart, Briefcase, Coins, Activity, Sparkles } from 'lucide-react';
 import type { TarotCard } from '@/types';
 import LuckyItems from '@/components/LuckyItems';
+import { playSound } from '@/utils/soundManager';
 
 interface CardDetailModalProps {
   card: TarotCard | null;
@@ -9,10 +10,15 @@ interface CardDetailModalProps {
 }
 
 export default function CardDetailModal({ card, onClose }: CardDetailModalProps) {
+  const handleClose = useCallback(() => {
+    playSound('modalClose');
+    onClose();
+  }, [onClose]);
+
   useEffect(() => {
     if (!card) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
@@ -20,14 +26,14 @@ export default function CardDetailModal({ card, onClose }: CardDetailModalProps)
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [card, onClose]);
+  }, [card, handleClose]);
 
   if (!card) return null;
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
@@ -36,7 +42,7 @@ export default function CardDetailModal({ card, onClose }: CardDetailModalProps)
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-gray-300 hover:text-white transition-colors z-10"
         >
           <X className="w-5 h-5" />
