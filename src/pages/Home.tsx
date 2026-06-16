@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import TarotCard from '@/components/TarotCard';
 import CardReading from '@/components/CardReading';
 import ShareImageModal from '@/components/ShareImageModal';
+import MeditationCountdown from '@/components/MeditationCountdown';
 import { generateShareImage } from '@/utils/shareImage';
-import { Sparkles, AlertCircle, Share2 } from 'lucide-react';
+import { Sparkles, AlertCircle, Share2, Wind, CloudFog } from 'lucide-react';
 
 export default function Home() {
   const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday } =
@@ -13,15 +14,26 @@ export default function Home() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareImageData, setShareImageData] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [meditationMode, setMeditationMode] = useState(false);
+  const [isMeditating, setIsMeditating] = useState(false);
 
   const remaining = getRemainingDraws();
   const canDraw = canDrawToday();
 
   const handleDraw = () => {
-    if (canDraw && !isFlipping) {
-      drawCard();
+    if (canDraw && !isFlipping && !isMeditating) {
+      if (meditationMode) {
+        setIsMeditating(true);
+      } else {
+        drawCard();
+      }
     }
   };
+
+  const handleMeditationComplete = useCallback(() => {
+    setIsMeditating(false);
+    drawCard();
+  }, [drawCard]);
 
   const handleGenerateShare = async () => {
     if (!currentCard) return;
@@ -49,13 +61,35 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="mb-6 flex items-center gap-2">
+      <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
         <div className="flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <span className="text-amber-200 text-sm font-medium">
             今日剩余 {remaining} 次
           </span>
         </div>
+
+        <button
+          onClick={() => setMeditationMode(!meditationMode)}
+          disabled={isFlipping || isMeditating || !!currentCard}
+          className={`group flex items-center gap-1.5 px-4 py-2 rounded-full border transition-all duration-300 ${
+            meditationMode
+              ? 'bg-teal-500/20 border-teal-400/50 text-teal-200'
+              : 'bg-gray-500/10 border-gray-500/30 text-gray-400 hover:bg-gray-500/20 hover:border-gray-400/50 hover:text-gray-300'
+          } ${(isFlipping || isMeditating || !!currentCard) ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          {meditationMode ? (
+            <>
+              <Wind className="w-4 h-4 text-teal-300 animate-pulse" />
+              <span className="text-sm font-medium">冥想模式 开</span>
+            </>
+          ) : (
+            <>
+              <CloudFog className="w-4 h-4" />
+              <span className="text-sm font-medium">冥想模式</span>
+            </>
+          )}
+        </button>
       </div>
 
       <div className="mb-10">
@@ -63,7 +97,7 @@ export default function Home() {
           card={currentCard}
           isFlipping={isFlipping}
           onClick={handleDraw}
-          disabled={!canDraw || isFlipping}
+          disabled={!canDraw || isFlipping || isMeditating}
         />
       </div>
 
@@ -106,6 +140,12 @@ export default function Home() {
         imageDataUrl={shareImageData}
         isGenerating={isGenerating}
         cardName={currentCard?.name || ''}
+      />
+
+      <MeditationCountdown
+        isActive={isMeditating}
+        onComplete={handleMeditationComplete}
+        duration={5}
       />
     </div>
   );

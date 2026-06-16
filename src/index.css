@@ -100,6 +100,17 @@ body {
   animation: glow 2s ease-in-out infinite;
 }
 
+@keyframes pingSlow {
+  75%, 100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+.animate-ping-slow {
+  animation: pingSlow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
