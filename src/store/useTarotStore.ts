@@ -151,13 +151,25 @@ export const useTarotStore = create<TarotState>((set, get) => ({
       mode
     );
 
+    const today = getTodayString();
+    const todayDraws = result.drawHistory.filter((r) => r.date === today).length;
+    const latestDate = result.drawHistory.length > 0
+      ? result.drawHistory.reduce((latest, record) =>
+          record.date > latest ? record.date : latest
+        , result.drawHistory[0].date)
+      : '';
+
     set({
       drawHistory: result.drawHistory,
       moodEntries: result.moodEntries,
+      todayDrawCount: todayDraws,
+      lastDrawDate: latestDate,
     });
 
     storage.set(STORAGE_KEY_HISTORY, result.drawHistory);
     storage.set(STORAGE_KEY_MOODS, result.moodEntries);
+    storage.set(STORAGE_KEY_TODAY_COUNT, todayDraws);
+    storage.set(STORAGE_KEY_LAST_DATE, latestDate);
 
     playSound('success');
 
