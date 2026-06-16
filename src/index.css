@@ -236,3 +236,129 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
+
+.particles-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 10;
+}
+
+.gold-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.9) 0%, rgba(255, 193, 7, 0.5) 50%, rgba(255, 193, 7, 0) 100%);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 0 0 8px 2px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes particle-fall-top-left {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-60px, 100px) scale(1.2) rotate(180deg);
+  }
+}
+
+@keyframes particle-fall-top-right {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(60px, 100px) scale(1.2) rotate(-180deg);
+  }
+}
+
+@keyframes particle-fall-bottom-left {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50px, -90px) scale(1.2) rotate(180deg);
+  }
+}
+
+@keyframes particle-fall-bottom-right {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(50px, -90px) scale(1.2) rotate(-180deg);
+  }
+}
+
+@keyframes particle-fall-left-up {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-80px, -40px) scale(1) rotate(120deg);
+  }
+}
+
+@keyframes particle-fall-right-up {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(80px, -40px) scale(1) rotate(-120deg);
+  }
+}
+
+.animate-particle-top-left {
+  animation: particle-fall-top-left 2s ease-out forwards;
+}
+
+.animate-particle-top-right {
+  animation: particle-fall-top-right 2s ease-out forwards;
+}
+
+.animate-particle-bottom-left {
+  animation: particle-fall-bottom-left 2s ease-out forwards;
+}
+
+.animate-particle-bottom-right {
+  animation: particle-fall-bottom-right 2s ease-out forwards;
+}
+
+.animate-particle-left-up {
+  animation: particle-fall-left-up 2s ease-out forwards;
+}
+
+.animate-particle-right-up {
+  animation: particle-fall-right-up 2s ease-out forwards;
+}
