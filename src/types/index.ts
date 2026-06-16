@@ -52,6 +52,8 @@ export interface TarotState {
   resetToday: () => void;
   getRemainingDraws: () => number;
   canDrawToday: () => boolean;
+  getLastDrawRecord: () => DrawRecord | null;
+  reviewLastDraw: () => void;
   addMoodEntry: (recordId: string, content: string) => void;
   updateMoodEntry: (moodId: string, content: string) => void;
   deleteMoodEntry: (moodId: string) => void;

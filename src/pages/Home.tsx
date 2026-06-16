@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo, useRef } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import TarotCard from '@/components/TarotCard';
 import CardReading from '@/components/CardReading';
@@ -8,10 +8,12 @@ import MeditationCountdown from '@/components/MeditationCountdown';
 import TarotTriviaModal from '@/components/TarotTriviaModal';
 import { generateShareImage } from '@/utils/shareImage';
 import { playSound } from '@/utils/soundManager';
-import { Sparkles, AlertCircle, Share2, Wind, CloudFog, Lightbulb } from 'lucide-react';
+import { formatDate } from '@/utils/date';
+import { tarotCards } from '@/data/tarotCards';
+import { Sparkles, AlertCircle, Share2, Wind, CloudFog, Lightbulb, RotateCcw } from 'lucide-react';
 
 export default function Home() {
-  const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday } =
+  const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday, getLastDrawRecord, reviewLastDraw } =
     useTarotStore();
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -20,9 +22,22 @@ export default function Home() {
   const [meditationMode, setMeditationMode] = useState(false);
   const [isMeditating, setIsMeditating] = useState(false);
   const [triviaModalOpen, setTriviaModalOpen] = useState(false);
+  const readingRef = useRef<HTMLDivElement>(null);
 
   const remaining = getRemainingDraws();
   const canDraw = canDrawToday();
+
+  const lastDrawInfo = useMemo(() => {
+    const lastRecord = getLastDrawRecord();
+    if (!lastRecord) return null;
+    const card = tarotCards.find((c) => c.id === lastRecord.cardId);
+    if (!card) return null;
+    return {
+      date: formatDate(lastRecord.date),
+      cardName: card.name,
+      symbol: card.symbol,
+    };
+  }, [getLastDrawRecord]);
 
   const handleDraw = () => {
     if (canDraw && !isFlipping && !isMeditating) {
@@ -40,6 +55,14 @@ export default function Home() {
     playSound('drawCard');
     drawCard();
   }, [drawCard]);
+
+  const handleReviewLastDraw = () => {
+    playSound('buttonClick');
+    reviewLastDraw();
+    setTimeout(() => {
+      readingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  };
 
   const handleGenerateShare = async () => {
     if (!currentCard) return;
@@ -85,6 +108,39 @@ export default function Home() {
             今日剩余 {remaining} 次
           </span>
         </div>
+
+        {lastDrawInfo && (
+          <button
+            onClick={handleReviewLastDraw}
+            disabled={isFlipping || isMeditating}
+            className="group flex items-center gap-1.5 px-4 py-2 rounded-full border transition-all duration-300"
+            style={{
+              backgroundColor: 'var(--accent-light)',
+              border: '1px solid var(--border-accent)',
+              color: 'var(--text-accent)',
+              opacity: (isFlipping || isMeditating) ? 0.5 : 1,
+              cursor: (isFlipping || isMeditating) ? 'not-allowed' : 'pointer',
+            }}
+            onMouseEnter={(e) => {
+              if (!isFlipping && !isMeditating) {
+                (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent-hover)';
+                (e.currentTarget as HTMLElement).style.color = 'var(--text-accent-hover)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent)';
+              (e.currentTarget as HTMLElement).style.color = 'var(--text-accent)';
+            }}
+            title="快速回顾上次抽牌"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span className="text-sm font-medium">上次抽牌</span>
+            <span className="text-sm">{lastDrawInfo.symbol}</span>
+            <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+              {lastDrawInfo.date} · {lastDrawInfo.cardName}
+            </span>
+          </button>
+        )}
 
         <button
           onClick={() => {
@@ -140,7 +196,7 @@ export default function Home() {
       )}
 
       {currentCard && !isFlipping && (
-        <div className="w-full animate-fade-in space-y-6">
+        <div ref={readingRef} className="w-full animate-fade-in space-y-6">
           <CardReading card={currentCard} />
           <LuckyItems card={currentCard} />
 

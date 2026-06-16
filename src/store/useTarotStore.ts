@@ -104,6 +104,32 @@ export const useTarotStore = create<TarotState>((set, get) => ({
     return get().getRemainingDraws() > 0;
   },
 
+  getLastDrawRecord: () => {
+    const state = get();
+    if (state.drawHistory.length === 0) return null;
+    return state.drawHistory[0];
+  },
+
+  reviewLastDraw: () => {
+    const state = get();
+    const lastRecord = state.getLastDrawRecord();
+    if (!lastRecord) return;
+
+    const card = tarotCards.find((c) => c.id === lastRecord.cardId);
+    if (!card) return;
+
+    const drawnCard: DrawnCard = {
+      ...card,
+      isReversed: lastRecord.isReversed,
+    };
+
+    set({
+      currentCard: drawnCard,
+      currentRecordId: lastRecord.id,
+      isFlipping: false,
+    });
+  },
+
   addMoodEntry: (recordId: string, content: string) => {
     const today = getTodayString();
     const newMood: MoodEntry = {
