@@ -1,5 +1,7 @@
 import type { DrawnCard } from '@/types';
 import { Heart, Briefcase, Coins, Activity, Sparkles } from 'lucide-react';
+import { useTarotStore } from '@/store/useTarotStore';
+import { playSound } from '@/utils/soundManager';
 
 interface CardReadingProps {
   card: DrawnCard;
@@ -12,6 +14,17 @@ export default function CardReading({ card }: CardReadingProps) {
   const careerFortune = isReversed ? card.reversedCareerFortune : card.careerFortune;
   const wealthFortune = isReversed ? card.reversedWealthFortune : card.wealthFortune;
   const healthFortune = isReversed ? card.reversedHealthFortune : card.healthFortune;
+
+  const { currentRecordId, toggleFavorite, isCurrentCardFavorite } = useTarotStore();
+  const isFavorite = isCurrentCardFavorite();
+
+  const handleToggleFavorite = () => {
+    if (!currentRecordId) return;
+    toggleFavorite(currentRecordId);
+    if (!isFavorite) {
+      playSound('success');
+    }
+  };
 
   return (
     <div className="w-full max-w-xl mx-auto">
@@ -92,6 +105,20 @@ export default function CardReading({ card }: CardReadingProps) {
               {healthFortune}
             </p>
           </div>
+        </div>
+
+        <div className="mt-6 pt-5" style={{ borderTop: '1px solid var(--border-accent)' }}>
+          <button
+            onClick={handleToggleFavorite}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all duration-300 active:scale-95 ${
+              isFavorite
+                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30'
+                : 'bg-white/5 text-pink-300/70 border border-pink-500/20 hover:bg-pink-500/10 hover:text-pink-300'
+            }`}
+          >
+            <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+            <span>{isFavorite ? '已收藏' : '收藏'}</span>
+          </button>
         </div>
       </div>
     </div>

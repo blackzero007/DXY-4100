@@ -8,6 +8,8 @@ export const exportData = (drawHistory: DrawRecord[], moodEntries: MoodEntry[]):
     ? { start: dates[0], end: dates[dates.length - 1] }
     : null;
 
+  const totalFavorites = drawHistory.filter(r => r.isFavorite).length;
+
   return {
     version: BACKUP_VERSION,
     exportedAt: Date.now(),
@@ -16,6 +18,7 @@ export const exportData = (drawHistory: DrawRecord[], moodEntries: MoodEntry[]):
     metadata: {
       totalDraws: drawHistory.length,
       totalMoods: moodEntries.length,
+      totalFavorites,
       dateRange,
     },
   };
@@ -143,11 +146,12 @@ export const mergeBackupData = (
 
 export const formatBackupInfo = (data: BackupData): string => {
   const exportDate = new Date(data.exportedAt).toLocaleString('zh-CN');
-  const { totalDraws, totalMoods, dateRange } = data.metadata;
+  const { totalDraws, totalMoods, totalFavorites, dateRange } = data.metadata;
 
   let info = `导出时间: ${exportDate}\n`;
   info += `抽牌记录: ${totalDraws} 条\n`;
-  info += `心情记录: ${totalMoods} 条`;
+  info += `心情记录: ${totalMoods} 条\n`;
+  info += `收藏记录: ${totalFavorites ?? 0} 条`;
 
   if (dateRange) {
     info += `\n日期范围: ${dateRange.start} 至 ${dateRange.end}`;

@@ -29,6 +29,7 @@ export interface DrawRecord {
   date: string;
   timestamp: number;
   isReversed: boolean;
+  isFavorite?: boolean;
 }
 
 export interface MoodEntry {
@@ -44,6 +45,7 @@ export interface TarotState {
   lastDrawDate: string;
   drawHistory: DrawRecord[];
   currentCard: DrawnCard | null;
+  currentRecordId: string | null;
   isFlipping: boolean;
   moodEntries: MoodEntry[];
   drawCard: () => void;
@@ -54,6 +56,9 @@ export interface TarotState {
   updateMoodEntry: (moodId: string, content: string) => void;
   deleteMoodEntry: (moodId: string) => void;
   getMoodByRecordId: (recordId: string) => MoodEntry | undefined;
+  toggleFavorite: (recordId: string) => void;
+  isFavoriteByRecordId: (recordId: string) => boolean;
+  isCurrentCardFavorite: () => boolean;
   exportBackup: () => void;
   importBackup: (file: File, mode?: 'merge' | 'replace') => Promise<ImportResult>;
   previewBackup: (file: File) => Promise<{ info: string; data: BackupData }>;
@@ -67,6 +72,7 @@ export interface BackupData {
   metadata: {
     totalDraws: number;
     totalMoods: number;
+    totalFavorites: number;
     dateRange: {
       start: string;
       end: string;

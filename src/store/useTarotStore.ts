@@ -31,6 +31,7 @@ const getInitialState = () => {
     lastDrawDate,
     drawHistory,
     currentCard: null,
+    currentRecordId: null,
     isFlipping: false,
     moodEntries,
   };
@@ -52,7 +53,7 @@ export const useTarotStore = create<TarotState>((set, get) => ({
       isReversed,
     };
 
-    set({ isFlipping: true, currentCard: null });
+    set({ isFlipping: true, currentCard: null, currentRecordId: null });
 
     setTimeout(() => {
       const today = getTodayString();
@@ -62,6 +63,7 @@ export const useTarotStore = create<TarotState>((set, get) => ({
         date: today,
         timestamp: Date.now(),
         isReversed,
+        isFavorite: false,
       };
 
       const newHistory = [newRecord, ...get().drawHistory];
@@ -71,6 +73,7 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
       set({
         currentCard: drawnCard,
+        currentRecordId: newRecord.id,
         isFlipping: false,
         todayDrawCount: newCount,
         lastDrawDate: today,
@@ -85,7 +88,7 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
   resetToday: () => {
     const today = getTodayString();
-    set({ todayDrawCount: 0, lastDrawDate: today, currentCard: null });
+    set({ todayDrawCount: 0, lastDrawDate: today, currentCard: null, currentRecordId: null });
     storage.set(STORAGE_KEY_TODAY_COUNT, 0);
     storage.set(STORAGE_KEY_LAST_DATE, today);
   },
@@ -132,6 +135,28 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
   getMoodByRecordId: (recordId: string) => {
     return get().moodEntries.find((mood) => mood.recordId === recordId);
+  },
+
+  toggleFavorite: (recordId: string) => {
+    const newHistory = get().drawHistory.map((record) =>
+      record.id === recordId
+        ? { ...record, isFavorite: !record.isFavorite }
+        : record
+    );
+    set({ drawHistory: newHistory });
+    storage.set(STORAGE_KEY_HISTORY, newHistory);
+    playSound('buttonClick');
+  },
+
+  isFavoriteByRecordId: (recordId: string) => {
+    const record = get().drawHistory.find((r) => r.id === recordId);
+    return record?.isFavorite ?? false;
+  },
+
+  isCurrentCardFavorite: () => {
+    const state = get();
+    if (!state.currentRecordId) return false;
+    return state.isFavoriteByRecordId(state.currentRecordId);
   },
 
   exportBackup: (): void => {

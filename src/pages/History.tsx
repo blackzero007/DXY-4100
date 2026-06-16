@@ -6,14 +6,15 @@ import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database } from 'l
 import MoodModal from '@/components/MoodModal';
 import DataBackupButtons from '@/components/DataBackupButtons';
 import { playSound } from '@/utils/soundManager';
-import type { TarotCard, DrawnCard, DrawRecord, MoodEntry } from '@/types';
+import type { TarotCard, DrawRecord, MoodEntry } from '@/types';
 
 export default function HistoryPage() {
-  const { drawHistory, addMoodEntry, updateMoodEntry, deleteMoodEntry, getMoodByRecordId } = useTarotStore();
+  const { drawHistory, addMoodEntry, updateMoodEntry, deleteMoodEntry, getMoodByRecordId, toggleFavorite } = useTarotStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<DrawRecord | null>(null);
   const [currentMood, setCurrentMood] = useState<MoodEntry | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   const stats = useMemo(() => {
     const totalDraws = drawHistory.length;
@@ -40,9 +41,15 @@ export default function HistoryPage() {
   }, [drawHistory]);
 
   const filteredHistory = useMemo(() => {
-    if (selectedCardId === null) return drawHistory;
-    return drawHistory.filter((record) => record.cardId === selectedCardId);
-  }, [drawHistory, selectedCardId]);
+    let result = drawHistory;
+    if (selectedCardId !== null) {
+      result = result.filter((record) => record.cardId === selectedCardId);
+    }
+    if (showOnlyFavorites) {
+      result = result.filter((record) => record.isFavorite);
+    }
+    return result;
+  }, [drawHistory, selectedCardId, showOnlyFavorites]);
 
   const groupedByDate = useMemo(() => {
     const groups = new Map<string, typeof drawHistory>();
@@ -161,36 +168,52 @@ export default function HistoryPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <History className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
               <h2 className="text-xl font-serif" style={{ color: 'var(--text-primary)' }}>抽牌记录</h2>
             </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                按牌名筛选：
-              </label>
-              <select
-                value={selectedCardId ?? ''}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedCardId(value === '' ? null : Number(value));
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => {
+                  setShowOnlyFavorites(!showOnlyFavorites);
                   playSound('buttonClick');
                 }}
-                className="px-3 py-2 rounded-lg text-sm outline-none transition-colors"
-                style={{
-                  backgroundColor: 'var(--card-bg)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-accent)',
-                }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  showOnlyFavorites
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                    : 'bg-white/5 text-pink-300/70 border border-pink-500/20 hover:bg-pink-500/10 hover:text-pink-300'
+                }`}
               >
-                <option value="">全部</option>
-                {tarotCards.map((card) => (
-                  <option key={card.id} value={card.id}>
-                    {card.symbol} {card.name}
-                  </option>
-                ))}
-              </select>
+                <Heart className={`w-4 h-4 ${showOnlyFavorites ? 'fill-current' : ''}`} />
+                <span>仅看收藏</span>
+              </button>
+              <div className="flex items-center gap-2">
+                <label className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  按牌名筛选：
+                </label>
+                <select
+                  value={selectedCardId ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSelectedCardId(value === '' ? null : Number(value));
+                    playSound('buttonClick');
+                  }}
+                  className="px-3 py-2 rounded-lg text-sm outline-none transition-colors"
+                  style={{
+                    backgroundColor: 'var(--card-bg)',
+                    color: 'var(--text-primary)',
+                    border: '1px solid var(--border-accent)',
+                  }}
+                >
+                  <option value="">全部</option>
+                  {tarotCards.map((card) => (
+                    <option key={card.id} value={card.id}>
+                      {card.symbol} {card.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -230,10 +253,6 @@ export default function HistoryPage() {
                       const mood = getMoodByRecordId(record.id);
                       const isReversed = record.isReversed ?? false;
                       const meaning = isReversed ? card.reversedMeaning : card.meaning;
-                      const drawnCard: DrawnCard = {
-                        ...card,
-                        isReversed,
-                      };
                       return (
                         <div
                           key={record.id}
@@ -269,6 +288,22 @@ export default function HistoryPage() {
                                 >
                                   {isReversed ? '逆位' : '正位'}
                                 </span>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleFavorite(record.id);
+                                  }}
+                                  className="transition-transform active:scale-90"
+                                  title={record.isFavorite ? '取消收藏' : '收藏'}
+                                >
+                                  <Heart
+                                    className={`w-4 h-4 ${
+                                      record.isFavorite
+                                        ? 'fill-rose-400 text-rose-400'
+                                        : 'text-gray-400/50'
+                                    }`}
+                                  />
+                                </button>
                               </div>
                               <p className="text-xs" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
                                 {card.nameEn}
