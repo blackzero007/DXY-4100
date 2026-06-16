@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import { tarotCards } from '@/data/tarotCards';
 import { formatDate } from '@/utils/date';
@@ -15,6 +15,7 @@ export default function HistoryPage() {
   const [currentMood, setCurrentMood] = useState<MoodEntry | undefined>(undefined);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const stats = useMemo(() => {
     const totalDraws = drawHistory.length;
@@ -51,15 +52,30 @@ export default function HistoryPage() {
     return result;
   }, [drawHistory, selectedCardId, showOnlyFavorites]);
 
+  useEffect(() => {
+    setVisibleCount(10);
+  }, [selectedCardId, showOnlyFavorites]);
+
+  const paginatedHistory = useMemo(() => {
+    return filteredHistory.slice(0, visibleCount);
+  }, [filteredHistory, visibleCount]);
+
+  const hasMore = filteredHistory.length > visibleCount;
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 10);
+    playSound('buttonClick');
+  };
+
   const groupedByDate = useMemo(() => {
     const groups = new Map<string, typeof drawHistory>();
-    filteredHistory.forEach((record) => {
+    paginatedHistory.forEach((record) => {
       const dateRecords = groups.get(record.date) || [];
       dateRecords.push(record);
       groups.set(record.date, dateRecords);
     });
     return Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0]));
-  }, [filteredHistory]);
+  }, [paginatedHistory]);
 
   const getCardById = (id: number) => tarotCards.find((c) => c.id === id);
 
@@ -349,6 +365,36 @@ export default function HistoryPage() {
                   </div>
                 </div>
               ))}
+
+              {filteredHistory.length > 0 && (
+                <div className="text-center pt-4">
+                  {hasMore ? (
+                    <button
+                      onClick={handleLoadMore}
+                      className="px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300"
+                      style={{
+                        backgroundColor: 'var(--card-bg)',
+                        color: 'var(--text-primary)',
+                        border: '1px solid var(--border-accent)',
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--accent-color)';
+                        (e.currentTarget as HTMLElement).style.color = 'white';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--card-bg)';
+                        (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                      }}
+                    >
+                      加载更多
+                    </button>
+                  ) : (
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      已加载全部记录
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
