@@ -21,18 +21,18 @@ export default function Horoscope() {
             <h1 className="text-3xl sm:text-4xl font-serif text-amber-100">星座运势</h1>
           </div>
           <p className="text-gray-400 text-sm sm:text-base">
-            选择你的星座，查看今日综合运势
+            输入或选择你的星座，查看今日综合运势
           </p>
         </div>
 
         <div className="mb-10">
-          <ZodiacSelector selectedSign={selectedSign} onSelect={setSelectedSign} />
+          <ZodiacSelector selectedSign={selectedSign} onSelect={setSelectedSign} autoSelectOnMatch />
         </div>
 
         {!selectedSign && (
           <div className="text-center py-12 animate-pulse">
             <Sparkles className="w-12 h-12 text-amber-500/30 mx-auto mb-4" />
-            <p className="text-gray-500 text-sm">请选择你的星座 ✨</p>
+            <p className="text-gray-500 text-sm">请输入或选择你的星座 ✨</p>
           </div>
         )}
 
