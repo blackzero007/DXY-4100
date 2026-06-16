@@ -19,10 +19,10 @@ export default function TarotIndex() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <BookOpen className="w-8 h-8 text-amber-400" />
-            <h1 className="text-3xl sm:text-4xl font-serif text-amber-100">塔罗牌图鉴</h1>
+            <BookOpen className="w-8 h-8" style={{ color: 'var(--accent-color)' }} />
+            <h1 className="text-3xl sm:text-4xl font-serif" style={{ color: 'var(--text-primary)' }}>塔罗牌图鉴</h1>
           </div>
-          <p className="text-gray-400 text-sm sm:text-base">
+          <p className="text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
             大阿卡纳牌 · 共 22 张 · 点击卡牌查看详细解读
           </p>
         </div>
@@ -36,7 +36,19 @@ export default function TarotIndex() {
               style={{ animationDelay: `${index * 30}ms` }}
             >
               <div
-                className={`relative aspect-[2/3] rounded-xl overflow-hidden bg-gradient-to-br ${card.color} border-2 border-amber-500/40 shadow-lg group-hover:border-amber-400 group-hover:shadow-amber-500/20 group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300`}
+                className={`relative aspect-[2/3] rounded-xl overflow-hidden bg-gradient-to-br ${card.color} shadow-lg group-hover:-translate-y-1 transition-all duration-300`}
+                style={{
+                  border: '2px solid',
+                  borderColor: 'var(--border-accent-strong)',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent-hover)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = '0 20px 25px -5px var(--accent-color), 0 8px 10px -6px var(--accent-color)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent-strong)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = '';
+                }}
               >
                 <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-3">

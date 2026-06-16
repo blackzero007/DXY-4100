@@ -17,10 +17,10 @@ export default function Horoscope() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Star className="w-8 h-8 text-amber-400" />
-            <h1 className="text-3xl sm:text-4xl font-serif text-amber-100">星座运势</h1>
+            <Star className="w-8 h-8" style={{ color: 'var(--accent-color)' }} />
+            <h1 className="text-3xl sm:text-4xl font-serif" style={{ color: 'var(--text-primary)' }}>星座运势</h1>
           </div>
-          <p className="text-gray-400 text-sm sm:text-base">
+          <p className="text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
             输入或选择你的星座，查看今日综合运势
           </p>
         </div>
@@ -31,8 +31,8 @@ export default function Horoscope() {
 
         {!selectedSign && (
           <div className="text-center py-12 animate-pulse">
-            <Sparkles className="w-12 h-12 text-amber-500/30 mx-auto mb-4" />
-            <p className="text-gray-500 text-sm">请输入或选择你的星座 ✨</p>
+            <Sparkles className="w-12 h-12 mx-auto mb-4" style={{ color: 'var(--accent-color)', opacity: 0.3 }} />
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>请输入或选择你的星座 ✨</p>
           </div>
         )}
 
@@ -55,52 +55,67 @@ export default function Horoscope() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white/5 backdrop-blur-sm border border-pink-500/20 rounded-xl p-5 hover:border-pink-400/40 transition-all">
+              <div
+                className="backdrop-blur-sm rounded-xl p-5 transition-all"
+                style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(236, 72, 153, 0.2)' }}
+              >
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="p-2 bg-pink-500/20 rounded-lg">
                     <Heart className="w-4 h-4 text-pink-400" />
                   </div>
                   <h3 className="text-pink-200 font-medium">爱情运势</h3>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed">{fortune.love}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{fortune.love}</p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-blue-500/20 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+              <div
+                className="backdrop-blur-sm rounded-xl p-5 transition-all"
+                style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(59, 130, 246, 0.2)' }}
+              >
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="p-2 bg-blue-500/20 rounded-lg">
                     <Briefcase className="w-4 h-4 text-blue-400" />
                   </div>
                   <h3 className="text-blue-200 font-medium">事业运势</h3>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed">{fortune.career}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{fortune.career}</p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-amber-500/20 rounded-xl p-5 hover:border-amber-400/40 transition-all">
+              <div
+                className="backdrop-blur-sm rounded-xl p-5 transition-all"
+                style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(245, 158, 11, 0.2)' }}
+              >
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="p-2 bg-amber-500/20 rounded-lg">
                     <Coins className="w-4 h-4 text-amber-400" />
                   </div>
                   <h3 className="text-amber-200 font-medium">财富运势</h3>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed">{fortune.wealth}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{fortune.wealth}</p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-green-500/20 rounded-xl p-5 hover:border-green-400/40 transition-all">
+              <div
+                className="backdrop-blur-sm rounded-xl p-5 transition-all"
+                style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(34, 197, 94, 0.2)' }}
+              >
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="p-2 bg-green-500/20 rounded-lg">
                     <Activity className="w-4 h-4 text-green-400" />
                   </div>
                   <h3 className="text-green-200 font-medium">健康运势</h3>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed">{fortune.health}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{fortune.health}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center gap-6 py-4">
-              <div className="flex items-center gap-2 px-5 py-3 bg-amber-500/10 border border-amber-500/30 rounded-full">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span className="text-amber-200 text-sm">幸运色</span>
-                <span className="text-amber-100 text-sm font-medium">{fortune.luckyColor}</span>
+              <div
+                className="flex items-center gap-2 px-5 py-3 rounded-full"
+                style={{ backgroundColor: 'var(--accent-light)', border: '1px solid var(--border-accent-strong)' }}
+              >
+                <Sparkles className="w-4 h-4" style={{ color: 'var(--accent-color)' }} />
+                <span className="text-sm" style={{ color: 'var(--text-accent)' }}>幸运色</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{fortune.luckyColor}</span>
               </div>
               <div className="flex items-center gap-2 px-5 py-3 bg-purple-500/10 border border-purple-500/30 rounded-full">
                 <Star className="w-4 h-4 text-purple-400" />

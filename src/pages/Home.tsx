@@ -61,18 +61,27 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
       <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-serif text-amber-100 mb-2">
+        <h1
+          className="text-3xl sm:text-4xl font-serif mb-2"
+          style={{ color: 'var(--text-primary)' }}
+        >
           今日运势占卜
         </h1>
-        <p className="text-gray-400 text-sm sm:text-base">
+        <p className="text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
           心中默念你的问题，点击塔罗牌开启今日运势
         </p>
       </div>
 
       <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
-        <div className="flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full">
-          <Sparkles className="w-4 h-4 text-amber-400" />
-          <span className="text-amber-200 text-sm font-medium">
+        <div
+          className="flex items-center gap-1.5 px-4 py-2 rounded-full"
+          style={{
+            backgroundColor: 'var(--accent-light)',
+            border: '1px solid var(--border-accent-strong)',
+          }}
+        >
+          <Sparkles className="w-4 h-4" style={{ color: 'var(--accent-color)' }} />
+          <span className="text-sm font-medium" style={{ color: 'var(--text-accent)' }}>
             今日剩余 {remaining} 次
           </span>
         </div>
@@ -83,15 +92,18 @@ export default function Home() {
             setMeditationMode(!meditationMode);
           }}
           disabled={isFlipping || isMeditating || !!currentCard}
-          className={`group flex items-center gap-1.5 px-4 py-2 rounded-full border transition-all duration-300 ${
-            meditationMode
-              ? 'bg-teal-500/20 border-teal-400/50 text-teal-200'
-              : 'bg-gray-500/10 border-gray-500/30 text-gray-400 hover:bg-gray-500/20 hover:border-gray-400/50 hover:text-gray-300'
-          } ${(isFlipping || isMeditating || !!currentCard) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className="group flex items-center gap-1.5 px-4 py-2 rounded-full border transition-all duration-300"
+          style={{
+            backgroundColor: meditationMode ? 'var(--meditation-active-bg)' : 'var(--meditation-inactive-bg)',
+            borderColor: meditationMode ? 'var(--meditation-active-border)' : 'var(--meditation-inactive-border)',
+            color: meditationMode ? 'var(--meditation-active-text)' : 'var(--meditation-inactive-text)',
+            opacity: (isFlipping || isMeditating || !!currentCard) ? 0.5 : 1,
+            cursor: (isFlipping || isMeditating || !!currentCard) ? 'not-allowed' : 'pointer',
+          }}
         >
           {meditationMode ? (
             <>
-              <Wind className="w-4 h-4 text-teal-300 animate-pulse" />
+              <Wind className="w-4 h-4 animate-pulse" style={{ color: 'var(--meditation-active-text)' }} />
               <span className="text-sm font-medium">冥想模式 开</span>
             </>
           ) : (
@@ -113,9 +125,15 @@ export default function Home() {
       </div>
 
       {!canDraw && !isFlipping && (
-        <div className="flex items-center gap-2 px-4 py-3 bg-rose-500/10 border border-rose-500/30 rounded-xl mb-8">
-          <AlertCircle className="w-5 h-5 text-rose-400" />
-          <p className="text-rose-300 text-sm">
+        <div
+          className="flex items-center gap-2 px-4 py-3 rounded-xl mb-8"
+          style={{
+            backgroundColor: 'var(--limit-bg)',
+            border: '1px solid var(--limit-border)',
+          }}
+        >
+          <AlertCircle className="w-5 h-5" style={{ color: 'var(--limit-text)' }} />
+          <p className="text-sm" style={{ color: 'var(--limit-text)' }}>
             今日抽牌次数已用完，明天再来吧~
           </p>
         </div>
@@ -129,19 +147,33 @@ export default function Home() {
           <div className="flex justify-center">
             <button
               onClick={handleGenerateShare}
-              className="group relative flex items-center gap-2.5 px-7 py-3.5 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 border-2 border-amber-500/50 hover:border-amber-400/70 rounded-xl text-amber-200 hover:text-amber-100 font-medium shadow-lg hover:shadow-amber-500/20 hover:shadow-xl transition-all duration-300 active:scale-95"
+              className="group relative flex items-center gap-2.5 px-7 py-3.5 border-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+              style={{
+                background: `linear-gradient(to right, var(--share-gradient-from), var(--share-gradient-to))`,
+                borderColor: 'var(--border-accent-strong)',
+                color: 'var(--text-accent)',
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget;
+                el.style.background = `linear-gradient(to right, var(--share-gradient-from-hover), var(--share-gradient-to-hover))`;
+                el.style.borderColor = 'var(--border-accent-hover)';
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget;
+                el.style.background = `linear-gradient(to right, var(--share-gradient-from), var(--share-gradient-to))`;
+                el.style.borderColor = 'var(--border-accent-strong)';
+              }}
             >
-              <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-400/0 via-amber-400/10 to-amber-400/0 opacity-0 group-hover:opacity-100 transition-opacity" />
               <Share2 className="w-5 h-5 relative z-10" />
               <span className="relative z-10">生成分享图</span>
-              <span className="relative z-10 text-amber-400">✨</span>
+              <span className="relative z-10" style={{ color: 'var(--accent-color)' }}>✨</span>
             </button>
           </div>
         </div>
       )}
 
       {!currentCard && !isFlipping && canDraw && (
-        <p className="text-gray-500 text-sm animate-pulse">
+        <p className="text-sm animate-pulse" style={{ color: 'var(--text-secondary)' }}>
           点击上方牌面开始抽牌
         </p>
       )}
@@ -152,7 +184,22 @@ export default function Home() {
           playSound('modalOpen');
           setTriviaModalOpen(true);
         }}
-        className="mt-8 flex items-center gap-2 px-5 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/50 rounded-full text-amber-300 hover:text-amber-200 text-sm font-medium transition-all duration-300 active:scale-95"
+        className="mt-8 flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 active:scale-95"
+        style={{
+          backgroundColor: 'var(--accent-light)',
+          border: `1px solid var(--border-accent)`,
+          color: 'var(--text-accent)',
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--accent-light)';
+          (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent-hover)';
+          (e.currentTarget as HTMLElement).style.color = 'var(--text-accent-hover)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--accent-light)';
+          (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-accent)';
+          (e.currentTarget as HTMLElement).style.color = 'var(--text-accent)';
+        }}
       >
         <Lightbulb className="w-4 h-4" />
         <span>💡 今日塔罗小知识</span>

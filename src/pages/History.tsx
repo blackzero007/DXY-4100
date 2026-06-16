@@ -81,57 +81,73 @@ export default function HistoryPage() {
     <div className="min-h-screen px-4 py-20">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-serif text-amber-100 mb-2">历史记录</h1>
-          <p className="text-gray-400 text-sm">查看你的抽牌历史和运势回顾</p>
+          <h1 className="text-3xl font-serif mb-2" style={{ color: 'var(--text-primary)' }}>
+            历史记录
+          </h1>
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            查看你的抽牌历史和运势回顾
+          </p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-          <div className="bg-purple-900/40 backdrop-blur-sm rounded-xl p-4 border border-amber-500/20">
+          <div
+            className="backdrop-blur-sm rounded-xl p-4"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-accent)' }}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="w-5 h-5 text-amber-400" />
-              <span className="text-gray-400 text-sm">总抽牌数</span>
+              <BarChart3 className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>总抽牌数</span>
             </div>
-            <p className="text-2xl font-bold text-amber-100">{stats.totalDraws}</p>
+            <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{stats.totalDraws}</p>
           </div>
 
-          <div className="bg-purple-900/40 backdrop-blur-sm rounded-xl p-4 border border-amber-500/20">
+          <div
+            className="backdrop-blur-sm rounded-xl p-4"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-accent)' }}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-5 h-5 text-amber-400" />
-              <span className="text-gray-400 text-sm">活跃天数</span>
+              <Calendar className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>活跃天数</span>
             </div>
-            <p className="text-2xl font-bold text-amber-100">{stats.uniqueDays}</p>
+            <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{stats.uniqueDays}</p>
           </div>
 
-          <div className="bg-purple-900/40 backdrop-blur-sm rounded-xl p-4 border border-amber-500/20 col-span-2 sm:col-span-2">
+          <div
+            className="backdrop-blur-sm rounded-xl p-4 col-span-2 sm:col-span-2"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-accent)' }}
+          >
             <div className="flex items-center gap-2 mb-2">
-              <Trophy className="w-5 h-5 text-amber-400" />
-              <span className="text-gray-400 text-sm">最常出现的牌</span>
+              <Trophy className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>最常出现的牌</span>
             </div>
             {stats.mostFrequentCard ? (
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{stats.mostFrequentCard.symbol}</span>
                 <div>
-                  <p className="text-amber-100 font-medium">
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>
                     {stats.mostFrequentCard.name}
                   </p>
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                     出现 {stats.mostFrequentCount} 次
                   </p>
                 </div>
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">暂无数据</p>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>暂无数据</p>
             )}
           </div>
         </div>
 
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <Database className="w-5 h-5 text-amber-400" />
-            <h2 className="text-xl font-serif text-amber-100">数据备份与恢复</h2>
+            <Database className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+            <h2 className="text-xl font-serif" style={{ color: 'var(--text-primary)' }}>数据备份与恢复</h2>
           </div>
-          <div className="bg-purple-900/40 backdrop-blur-sm rounded-xl p-5 border border-amber-500/20">
-            <p className="text-gray-400 text-sm mb-4">
+          <div
+            className="backdrop-blur-sm rounded-xl p-5"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--backup-border)' }}
+          >
+            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
               导出你的抽牌记录和心情数据到本地文件，或从备份文件中恢复数据。
             </p>
             <DataBackupButtons />
@@ -140,31 +156,40 @@ export default function HistoryPage() {
 
         <div className="space-y-6">
           <div className="flex items-center gap-2">
-            <History className="w-5 h-5 text-amber-400" />
-            <h2 className="text-xl font-serif text-amber-100">抽牌记录</h2>
+            <History className="w-5 h-5" style={{ color: 'var(--accent-color)' }} />
+            <h2 className="text-xl font-serif" style={{ color: 'var(--text-primary)' }}>抽牌记录</h2>
           </div>
 
           {groupedByDate.length === 0 ? (
-            <div className="text-center py-16 bg-purple-900/20 rounded-2xl border border-amber-500/10">
-              <History className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-500">暂无抽牌记录</p>
-              <p className="text-gray-600 text-sm mt-1">去首页抽取你的第一张牌吧</p>
+            <div
+              className="text-center py-16 rounded-2xl"
+              style={{ backgroundColor: 'var(--empty-bg)', border: '1px solid var(--empty-border)' }}
+            >
+              <History className="w-12 h-12 mx-auto mb-4" style={{ color: 'var(--text-secondary)' }} />
+              <p style={{ color: 'var(--text-secondary)' }}>暂无抽牌记录</p>
+              <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>去首页抽取你的第一张牌吧</p>
             </div>
           ) : (
             <div className="space-y-6">
               {groupedByDate.map(([date, records]) => (
                 <div key={date} className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-amber-400" />
-                    <h3 className="text-amber-200 font-medium">
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: 'var(--accent-color)' }}
+                    />
+                    <h3 className="font-medium" style={{ color: 'var(--text-accent)' }}>
                       {formatDate(date)}
                     </h3>
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                       ({records.length} 张牌)
                     </span>
                   </div>
 
-                  <div className="ml-4 pl-4 border-l-2 border-amber-500/20 space-y-3">
+                  <div
+                    className="ml-4 pl-4 space-y-3"
+                    style={{ borderLeft: '2px solid var(--border-accent)' }}
+                  >
                     {records.map((record) => {
                       const card = getCardById(record.cardId);
                       if (!card) return null;
@@ -172,7 +197,17 @@ export default function HistoryPage() {
                       return (
                         <div
                           key={record.id}
-                          className="bg-purple-900/30 backdrop-blur-sm rounded-xl p-4 border border-amber-500/10 hover:border-amber-500/30 transition-colors"
+                          className="backdrop-blur-sm rounded-xl p-4 transition-colors"
+                          style={{
+                            backgroundColor: 'var(--card-bg)',
+                            border: '1px solid var(--card-border)',
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.borderColor = 'var(--card-border-hover)';
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.borderColor = 'var(--card-border)';
+                          }}
                         >
                           <div className="flex items-center gap-4">
                             <div
@@ -181,13 +216,13 @@ export default function HistoryPage() {
                               {card.symbol}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-amber-100 font-medium">
+                              <h4 className="font-medium" style={{ color: 'var(--text-primary)' }}>
                                 {card.name}
                               </h4>
-                              <p className="text-gray-500 text-xs">
+                              <p className="text-xs" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
                                 {card.nameEn}
                               </p>
-                              <p className="text-gray-400 text-sm mt-1 line-clamp-2">
+                              <p className="text-sm mt-1 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>
                                 {card.meaning}
                               </p>
                             </div>
@@ -213,10 +248,10 @@ export default function HistoryPage() {
                             </button>
                           </div>
                           {mood && (
-                            <div className="mt-3 pt-3 border-t border-amber-500/10">
+                            <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-accent)' }}>
                               <div className="flex items-start gap-2">
                                 <Heart className="w-4 h-4 text-pink-400 flex-shrink-0 mt-0.5" />
-                                <p className="text-gray-300 text-sm leading-relaxed line-clamp-3">
+                                <p className="text-sm leading-relaxed line-clamp-3" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>
                                   {mood.content}
                                 </p>
                               </div>
