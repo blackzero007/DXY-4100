@@ -1,9 +1,16 @@
 import { create } from 'zustand';
-import type { TarotState, TarotCard, DrawRecord, MoodEntry } from '@/types';
+import type { TarotState, TarotCard, DrawRecord, MoodEntry, BackupData, ImportResult } from '@/types';
 import { tarotCards, DAILY_DRAW_LIMIT } from '@/data/tarotCards';
 import { storage } from '@/utils/storage';
 import { getTodayString, generateId } from '@/utils/date';
 import { playSound } from '@/utils/soundManager';
+import {
+  exportData,
+  downloadBackup,
+  readBackupFile,
+  mergeBackupData,
+  formatBackupInfo,
+} from '@/utils/dataBackup';
 
 const STORAGE_KEY_HISTORY = 'draw_history';
 const STORAGE_KEY_LAST_DATE = 'last_draw_date';
@@ -118,5 +125,42 @@ export const useTarotStore = create<TarotState>((set, get) => ({
 
   getMoodByRecordId: (recordId: string) => {
     return get().moodEntries.find((mood) => mood.recordId === recordId);
+  },
+
+  exportBackup: (): void => {
+    const state = get();
+    const data = exportData(state.drawHistory, state.moodEntries);
+    downloadBackup(data);
+    playSound('success');
+  },
+
+  previewBackup: async (file: File): Promise<{ info: string; data: BackupData }> => {
+    const data = await readBackupFile(file);
+    const info = formatBackupInfo(data);
+    return { info, data };
+  },
+
+  importBackup: async (file: File, mode: 'merge' | 'replace' = 'merge'): Promise<ImportResult> => {
+    const state = get();
+    const backupData = await readBackupFile(file);
+
+    const result = mergeBackupData(
+      state.drawHistory,
+      state.moodEntries,
+      backupData,
+      mode
+    );
+
+    set({
+      drawHistory: result.drawHistory,
+      moodEntries: result.moodEntries,
+    });
+
+    storage.set(STORAGE_KEY_HISTORY, result.drawHistory);
+    storage.set(STORAGE_KEY_MOODS, result.moodEntries);
+
+    playSound('success');
+
+    return result;
   },
 }));

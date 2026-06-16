@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { useTarotStore } from '@/store/useTarotStore';
 import { tarotCards } from '@/data/tarotCards';
 import { formatDate } from '@/utils/date';
-import { History, BarChart3, Trophy, Calendar, Heart, Pencil } from 'lucide-react';
+import { History, BarChart3, Trophy, Calendar, Heart, Pencil, Database } from 'lucide-react';
 import MoodModal from '@/components/MoodModal';
+import DataBackupButtons from '@/components/DataBackupButtons';
 import { playSound } from '@/utils/soundManager';
 import type { TarotCard, DrawRecord, MoodEntry } from '@/types';
 
@@ -121,6 +122,19 @@ export default function HistoryPage() {
             ) : (
               <p className="text-gray-500 text-sm">暂无数据</p>
             )}
+          </div>
+        </div>
+
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <Database className="w-5 h-5 text-amber-400" />
+            <h2 className="text-xl font-serif text-amber-100">数据备份与恢复</h2>
+          </div>
+          <div className="bg-purple-900/40 backdrop-blur-sm rounded-xl p-5 border border-amber-500/20">
+            <p className="text-gray-400 text-sm mb-4">
+              导出你的抽牌记录和心情数据到本地文件，或从备份文件中恢复数据。
+            </p>
+            <DataBackupButtons />
           </div>
         </div>
 

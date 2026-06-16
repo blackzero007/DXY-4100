@@ -44,4 +44,33 @@ export interface TarotState {
   updateMoodEntry: (moodId: string, content: string) => void;
   deleteMoodEntry: (moodId: string) => void;
   getMoodByRecordId: (recordId: string) => MoodEntry | undefined;
+  exportBackup: () => void;
+  importBackup: (file: File, mode?: 'merge' | 'replace') => Promise<ImportResult>;
+  previewBackup: (file: File) => Promise<{ info: string; data: BackupData }>;
+}
+
+export interface BackupData {
+  version: string;
+  exportedAt: number;
+  drawHistory: DrawRecord[];
+  moodEntries: MoodEntry[];
+  metadata: {
+    totalDraws: number;
+    totalMoods: number;
+    dateRange: {
+      start: string;
+      end: string;
+    } | null;
+  };
+}
+
+export interface ImportResult {
+  drawHistory: DrawRecord[];
+  moodEntries: MoodEntry[];
+  stats: {
+    importedDraws: number;
+    importedMoods: number;
+    skippedDraws: number;
+    skippedMoods: number;
+  };
 }
