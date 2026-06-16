@@ -2,10 +2,29 @@ import { Link, useLocation } from 'react-router-dom';
 import { Sparkles, History, BookOpen, Star, Sun, Moon } from 'lucide-react';
 import { playSound } from '@/utils/soundManager';
 import { useTheme } from '@/hooks/useTheme';
+import { useState, useEffect } from 'react';
 
 export default function NavBar() {
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
+  const [currentTime, setCurrentTime] = useState('');
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      setCurrentTime(`${year}年${month}月${day}日 ${hours}:${minutes}`);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleNavClick = () => {
     playSound('navClick');
@@ -15,6 +34,13 @@ export default function NavBar() {
     playSound('buttonClick');
     toggleTheme();
   };
+
+  const navLinks = [
+    { to: '/', icon: Sparkles, label: '今日抽牌' },
+    { to: '/horoscope', icon: Star, label: '星座运势' },
+    { to: '/history', icon: History, label: '历史记录' },
+    { to: '/tarot-index', icon: BookOpen, label: '塔罗图鉴' },
+  ];
 
   return (
     <nav
@@ -36,107 +62,52 @@ export default function NavBar() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              onClick={handleNavClick}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-              style={{
-                color: location.pathname === '/' ? 'var(--text-accent)' : 'var(--nav-text)',
-                backgroundColor: location.pathname === '/' ? 'var(--accent-light)' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (location.pathname !== '/') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--nav-hover-bg)';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--text-accent-hover)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== '/') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--nav-text)';
-                }
-              }}
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>今日抽牌</span>
-            </Link>
-            <Link
-              to="/horoscope"
-              onClick={handleNavClick}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-              style={{
-                color: location.pathname === '/horoscope' ? 'var(--text-accent)' : 'var(--nav-text)',
-                backgroundColor: location.pathname === '/horoscope' ? 'var(--accent-light)' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (location.pathname !== '/horoscope') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--nav-hover-bg)';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--text-accent-hover)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== '/horoscope') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--nav-text)';
-                }
-              }}
-            >
-              <Star className="w-4 h-4" />
-              <span>星座运势</span>
-            </Link>
-            <Link
-              to="/history"
-              onClick={handleNavClick}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-              style={{
-                color: location.pathname === '/history' ? 'var(--text-accent)' : 'var(--nav-text)',
-                backgroundColor: location.pathname === '/history' ? 'var(--accent-light)' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (location.pathname !== '/history') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--nav-hover-bg)';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--text-accent-hover)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== '/history') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--nav-text)';
-                }
-              }}
-            >
-              <History className="w-4 h-4" />
-              <span>历史记录</span>
-            </Link>
-            <Link
-              to="/tarot-index"
-              onClick={handleNavClick}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-              style={{
-                color: location.pathname === '/tarot-index' ? 'var(--text-accent)' : 'var(--nav-text)',
-                backgroundColor: location.pathname === '/tarot-index' ? 'var(--accent-light)' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (location.pathname !== '/tarot-index') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--nav-hover-bg)';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--text-accent-hover)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== '/tarot-index') {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                  (e.currentTarget as HTMLElement).style.color = 'var(--nav-text)';
-                }
-              }}
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>塔罗图鉴</span>
-            </Link>
+          <div
+            className="text-sm font-medium hidden sm:block"
+            style={{ color: 'rgba(245, 158, 11, 0.6)' }}
+          >
+            {currentTime}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = location.pathname === link.to;
+              const isHovered = hoveredLink === link.to;
+              const showIndicator = isActive || isHovered;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={handleNavClick}
+                  className="relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all duration-300"
+                  style={{
+                    color: isActive ? 'var(--text-accent)' : isHovered ? 'var(--text-accent-hover)' : 'var(--nav-text)',
+                  }}
+                  onMouseEnter={() => {
+                    setHoveredLink(link.to);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredLink(null);
+                  }}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{link.label}</span>
+                  <span
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-300 ease-out"
+                    style={{
+                      width: showIndicator ? '60%' : '0%',
+                      backgroundColor: 'var(--accent-color)',
+                      opacity: showIndicator ? 1 : 0,
+                    }}
+                  />
+                </Link>
+              );
+            })}
 
             <button
               onClick={handleThemeToggle}
-              className="flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-300 hover:scale-110 active:scale-95"
+              className="flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-300 hover:scale-110 active:scale-95 ml-2"
               style={{
                 backgroundColor: 'var(--accent-light)',
                 border: '1px solid var(--border-accent)',
