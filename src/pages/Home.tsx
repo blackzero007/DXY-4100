@@ -5,9 +5,10 @@ import CardReading from '@/components/CardReading';
 import LuckyItems from '@/components/LuckyItems';
 import ShareImageModal from '@/components/ShareImageModal';
 import MeditationCountdown from '@/components/MeditationCountdown';
+import TarotTriviaModal from '@/components/TarotTriviaModal';
 import { generateShareImage } from '@/utils/shareImage';
 import { playSound } from '@/utils/soundManager';
-import { Sparkles, AlertCircle, Share2, Wind, CloudFog } from 'lucide-react';
+import { Sparkles, AlertCircle, Share2, Wind, CloudFog, Lightbulb } from 'lucide-react';
 
 export default function Home() {
   const { currentCard, isFlipping, drawCard, getRemainingDraws, canDrawToday } =
@@ -18,6 +19,7 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [meditationMode, setMeditationMode] = useState(false);
   const [isMeditating, setIsMeditating] = useState(false);
+  const [triviaModalOpen, setTriviaModalOpen] = useState(false);
 
   const remaining = getRemainingDraws();
   const canDraw = canDrawToday();
@@ -144,6 +146,18 @@ export default function Home() {
         </p>
       )}
 
+      <button
+        onClick={() => {
+          playSound('buttonClick');
+          playSound('modalOpen');
+          setTriviaModalOpen(true);
+        }}
+        className="mt-8 flex items-center gap-2 px-5 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/50 rounded-full text-amber-300 hover:text-amber-200 text-sm font-medium transition-all duration-300 active:scale-95"
+      >
+        <Lightbulb className="w-4 h-4" />
+        <span>💡 今日塔罗小知识</span>
+      </button>
+
       <ShareImageModal
         open={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
@@ -156,6 +170,11 @@ export default function Home() {
         isActive={isMeditating}
         onComplete={handleMeditationComplete}
         duration={5}
+      />
+
+      <TarotTriviaModal
+        isOpen={triviaModalOpen}
+        onClose={() => setTriviaModalOpen(false)}
       />
     </div>
   );
